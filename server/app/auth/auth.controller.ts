@@ -58,4 +58,26 @@ async function createUser(name: string, email: string, password: string) {
 
 export const signup = async (req: Request, res: Response) => {};
 
-export const login = async (req: Request, res: Response) => {};
+export const login = async (req: Request, res: Response) => {
+  const { email, password } = req.body; // Retrieve email and password from request body
+
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Please enter all fields' });
+  }
+  try {
+    const user = await getUser(email);
+    if (!user) {
+      return res.status(400).json({ error: 'User does not exist' });
+    }
+    return res.json({
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Server error' });
+  }
+};
