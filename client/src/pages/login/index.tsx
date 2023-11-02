@@ -1,4 +1,5 @@
 import React from "react";
+import { useState } from "react";
 import { Typography, Card, Input, Button, Space, Form } from "antd";
 import type { FormItemProps } from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
@@ -8,11 +9,15 @@ import { HomeOutlined } from '@ant-design/icons';
 
 const Login: React.FC = () => {
 
-  const [passwordVisible, setPasswordVisible] = React.useState(false);
-  const [isButtonHovered, setIsButtonHovered] = React.useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [isButtonHovered, setIsButtonHovered] = useState(false);
+  const [formSubmit, setFormSubmit] = useState(false)
+  const handleFormSubmit = async (value: any) => {
+    console.log(value)
+  }
 
   return <div
-    style={{
+    style={{ 
       display: "flex",
       flexDirection: "column",
       justifyContent: "center",
@@ -35,27 +40,42 @@ const Login: React.FC = () => {
             textAlign: "center",
             color: "rgb(69, 90, 100)",
           }}>Log In</Typography.Title>
+
+        <Form labelCol={{ span: 8 }}
+          wrapperCol={{ span: 0 }}
+          style={{ maxWidth: 600, margin: '0 20px' }}
+          initialValues={{ remember: true }}
+          autoComplete="off"
+          layout="vertical"
+          onFinish={handleFormSubmit}>
+
+
         <div style={{
           margin: "20px",
         }}>
-          <Typography.Text style={{
-            marginBottom: "5px",
-            color: "rgb(69, 90, 100)",
-          }}>Email Address</Typography.Text>
-
+            <Form.Item label="Email Address" name="Email"
+              style={{ marginBottom: "5px", color: "rgb(69, 90, 100)", }}
+              rules={[{ required: true }]}
+            >
           <Input
             placeholder="Email"
+                id="Email"
             style={{ marginBottom: "20px" }}
           />
-          <Typography.Text style={{
-            marginBottom: "5px",
-            color: "rgb(69, 90, 100)"
-          }}>Password</Typography.Text>
+            </Form.Item>
+
+
+            <Form.Item label="Password" name="Password"
+              style={{ marginBottom: "5px", color: "rgb(69, 90, 100)", }}
+              rules={[{ required: true }]}
+            >
           <Input.Password
             placeholder="Password"
+                id="Passwors"
             style={{ marginBottom: "20px" }}
             iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
           />
+            </Form.Item>
 
           <Button type="primary"
             style={{
@@ -67,6 +87,10 @@ const Login: React.FC = () => {
             icon={<HomeOutlined />}
           >Log In</Button>
         </div>
+
+        </Form>
+
+
         <div style={{ textAlign: "center" }}>
           <Button
             type="link"
@@ -80,6 +104,7 @@ const Login: React.FC = () => {
           >
             Back to home
           </Button>
+
         </div>
       </div>
     </Card>
