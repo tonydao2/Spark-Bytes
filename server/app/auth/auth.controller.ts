@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import prisma from '../prisma_client.ts';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
-import { env } from '../common/setupEnv.ts';
+//import jwt from 'jsonwebtoken';
+//import bcrypt from 'bcrypt';
+//import { env } from '../common/setupEnv.ts';
 //Delete this line once you use the function
 // @ts-ignore
 async function doesUserExist(email: string): Promise<boolean> {
@@ -56,6 +56,55 @@ async function createUser(name: string, email: string, password: string) {
   return newUser;
 }
 
-export const signup = async (req: Request, res: Response) => {};
+export const signup = async (req: Request, res: Response) => {
+  const { name, email, password } = req.body
+  res.send(name)
+  if (!email || !password || name) {
+    return res.status(400).json({ error: 'Please enter all fields' })
+  }
 
-export const login = async (req: Request, res: Response) => {};
+  try {
+    const user = await getUser(email)
+    if (user) {
+      return res.status(400).json({ error: 'User already exist' })
+    }
+    const newUser = await createUser(name, email, password)
+
+    return res.json({
+      user: {
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email,
+      },
+    })
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({ error: 'Server error' });
+  }
+};
+
+
+
+export const login = async (req: Request, res: Response) => {
+  const { email, password } = req.body; // Retrieve email and password from request body
+
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Please enter all fields' });
+  }
+  try {
+    const user = await getUser(email);
+    if (!user) {
+      return res.status(400).json({ error: 'User does not exist' });
+    }
+    return res.json({
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Server error' });
+  }
+};
