@@ -3,6 +3,7 @@ import prisma from '../prisma_client.ts';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { env } from '../common/setupEnv.ts';
+import { create } from 'axios';
 //Delete this line once you use the function
 // @ts-ignore
 async function doesUserExist(email: string): Promise<boolean> {
@@ -56,6 +57,29 @@ async function createUser(name: string, email: string, password: string) {
   return newUser;
 }
 
-export const signup = async (req: Request, res: Response) => {};
+async function hasher(pw: string): Promise<string> {
+  return bcrypt.hash(pw, 12)
+}
+
+export const signup = async (req: Request, res: Response) => {
+  const { name, email, password } = req.body; // destructure into consts
+  if (!name || !email || !password){ return res.status(400).send("BAD REQUEST: missing parameter")}
+  if (![name, email, password].every(item => typeof item === 'string')){
+    return res.status(400).send("BAD REQUEST: malformed parameters")
+  }
+  const status = await doesUserExist(email);
+  if (status){return res.status(409).send("CONFLICT: user already exist")}
+  const hashPw = await hasher(password);
+  const newUser = await createUser(name, email, hashPw);
+  // assuming it was ssuccess
+  const newToken = {
+    id: newUser.id,
+    name: name,
+    email: email,
+    canPostEvents: newUser.canPostEvents,
+    isAdmin: newUser.isAdmin
+  }
+  return newToken
+};
 
 export const login = async (req: Request, res: Response) => {};
