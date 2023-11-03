@@ -14,6 +14,8 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(cors());
 app.use(express.json());
 
+app.get('/test', (_, res) => { res.send('200 OK'); });
+
 app.use('/api/', helloRouter);
 app.use('/api/user', userRouter);
 app.use('/api', helloRouter);
