@@ -80,7 +80,9 @@ export const signup = async (req: Request, res: Response) => {
   }
   if (!email.includes("@") || !email.includes(".")){return res.status(400).send("BAD REQUEST: check email")}
   const status = await doesUserExist(email);
-  if (status instanceof Error){return res.status(500).send("ERROR CHECK USER EXIST")}
+  if (status instanceof Error){
+    console.log(status)
+    return res.status(500).send("ERROR CHECK USER EXIST")}
   if (status){return res.status(409).send("CONFLICT: user already exist")}
   const hashPw = await hasher(password);
   const newUser = await createUser(name, email, hashPw);
