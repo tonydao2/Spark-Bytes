@@ -6,9 +6,31 @@ import { Button, Checkbox, Form, Input } from 'antd';
 export default function Signup() {
   const [formSubmit, setFormSubmit] = useState(false)
 
+
   const handleFormSubmit = async (value) => {
     console.log(value)
+    const serverUrl = '/signup'
+
+    try {
+      const response = await fetch(serverUrl, {
+        method: 'POST',
+        body: value
+      })
+
+      if (response.ok) {
+        // Request was successful
+        const data = await response.json(); // If the server returns a response
+        console.log(data);
+
+      }
+    } catch (error) {
+      console.log(error)
+    }
+
+
   }
+  // do a check and return a status quote. If email, 
+  // send info to signup backend route 
 
   const validatePassword = async (rule, value) => {
     if (value.length < 8) {
@@ -19,9 +41,6 @@ export default function Signup() {
     }
     else if (!/[A-Z]/.test(value)) {
       throw new Error('Password must include at least one uppercase letter')
-    }
-    else {
-      console.log(value)
     }
 
   }

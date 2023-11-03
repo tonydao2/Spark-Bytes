@@ -66,6 +66,7 @@ async function createUser(name: string, email: string, password: string) {
   }
 }
 
+<<<<<<< HEAD
 async function hasher(pw: string): Promise<string> {
   return bcrypt.hash(pw, 12)
 }
@@ -103,6 +104,37 @@ export const signup = async (req: Request, res: Response) => {
   return res.status(200).json(newToken)
 };
 
+=======
+export const signup = async (req: Request, res: Response) => {
+  const { name, email, password } = req.body
+  res.send(name)
+  if (!email || !password || name) {
+    return res.status(400).json({ error: 'Please enter all fields' })
+  }
+
+  try {
+    const user = await getUser(email)
+    if (user) {
+      return res.status(400).json({ error: 'User already exist' })
+    }
+    const newUser = await createUser(name, email, password)
+
+    return res.json({
+      user: {
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email,
+      },
+    })
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({ error: 'Server error' });
+  }
+};
+
+
+
+>>>>>>> origin/signupfrontend
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body; // Retrieve email and password from request body
 

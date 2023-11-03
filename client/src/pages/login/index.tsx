@@ -1,6 +1,10 @@
 import React from "react";
+<<<<<<< HEAD
 import { useState } from "react";
 import { Typography, Card, Input, Button, Space, Form } from "antd";
+=======
+import { Typography, Card, Input, Button, Space } from "antd";
+>>>>>>> origin/signupfrontend
 import type { FormItemProps } from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { HomeOutlined } from '@ant-design/icons';
@@ -17,7 +21,7 @@ const Login: React.FC = () => {
   }
 
   return <div
-    style={{ 
+    style={{
       display: "flex",
       flexDirection: "column",
       justifyContent: "center",
@@ -50,18 +54,18 @@ const Login: React.FC = () => {
           onFinish={handleFormSubmit}>
 
 
-        <div style={{
-          margin: "20px",
-        }}>
+          <div style={{
+            margin: "20px",
+          }}>
             <Form.Item label="Email Address" name="Email"
               style={{ marginBottom: "5px", color: "rgb(69, 90, 100)", }}
               rules={[{ required: true }]}
             >
-          <Input
-            placeholder="Email"
+              <Input
+                placeholder="Email"
                 id="Email"
-            style={{ marginBottom: "20px" }}
-          />
+                style={{ marginBottom: "20px" }}
+              />
             </Form.Item>
 
 
@@ -69,24 +73,24 @@ const Login: React.FC = () => {
               style={{ marginBottom: "5px", color: "rgb(69, 90, 100)", }}
               rules={[{ required: true }]}
             >
-          <Input.Password
-            placeholder="Password"
+              <Input.Password
+                placeholder="Password"
                 id="Passwors"
-            style={{ marginBottom: "20px" }}
-            iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-          />
+                style={{ marginBottom: "20px" }}
+                iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+              />
             </Form.Item>
 
-          <Button type="primary"
-            style={{
-              backgroundColor: "rgb(102, 187, 106)",
-              border: "none",
-              color: "white",
-              width: "100%"
-            }}
-            icon={<HomeOutlined />}
-          >Log In</Button>
-        </div>
+            <Button type="primary"
+              style={{
+                backgroundColor: "rgb(102, 187, 106)",
+                border: "none",
+                color: "white",
+                width: "100%"
+              }}
+              icon={<HomeOutlined />}
+            >Log In</Button>
+          </div>
 
         </Form>
 
@@ -104,7 +108,6 @@ const Login: React.FC = () => {
           >
             Back to home
           </Button>
-
         </div>
       </div>
     </Card>
