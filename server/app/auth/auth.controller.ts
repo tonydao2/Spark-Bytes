@@ -56,33 +56,6 @@ async function createUser(name: string, email: string, password: string) {
   return newUser;
 }
 
-export const signup = async (req: Request, res: Response) => {
-  const { name, email, password } = req.body
-  res.send(name)
-  if (!email || !password || name) {
-    return res.status(400).json({ error: 'Please enter all fields' })
-  }
-
-  try {
-    const user = await getUser(email)
-    if (user) {
-      return res.status(400).json({ error: 'User already exist' })
-    }
-    const newUser = await createUser(name, email, password)
-
-    return res.json({
-      user: {
-        id: newUser.id,
-        name: newUser.name,
-        email: newUser.email,
-      },
-    })
-  } catch (error) {
-    console.error(error)
-    return res.status(500).json({ error: 'Server error' });
-  }
-};
-
 
 
 export const login = async (req: Request, res: Response) => {
