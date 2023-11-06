@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
 import prisma from '../prisma_client.ts';
 import bcrypt from 'bcrypt';
-// import jwt from 'jsonwebtoken';
-// import { env } from '../common/setupEnv.ts';
-// import { create } from 'axios';
+import jwt from 'jsonwebtoken';
+import { env } from '../common/setupEnv.ts';
+
+const JWT_SECRET = env.JWT_TOKEN_SECRET;
 
 async function doesUserExist(email: string) {
   /**
@@ -34,12 +35,22 @@ async function getUser(email: string) {
    * Potentially throws an error from Prisma
    * @param email string - email of the user
    */
-  const user = await prisma.user.findFirst({
-    where: {
-      email: email,
-    },
-  });
-  return user;
+  try {
+    const user = await prisma.user.findFirst({
+      where: {
+        email: email,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        password: true, // Include the 'password' field
+      },
+    });
+    return user;
+  } catch (err) {
+    return err;
+  }
 }
 
 
@@ -66,7 +77,6 @@ async function createUser(name: string, email: string, password: string) {
   }
 }
 
-<<<<<<< HEAD
 async function hasher(pw: string): Promise<string> {
   return bcrypt.hash(pw, 12)
 }
@@ -104,37 +114,6 @@ export const signup = async (req: Request, res: Response) => {
   return res.status(200).json(newToken)
 };
 
-=======
-export const signup = async (req: Request, res: Response) => {
-  const { name, email, password } = req.body
-  res.send(name)
-  if (!email || !password || name) {
-    return res.status(400).json({ error: 'Please enter all fields' })
-  }
-
-  try {
-    const user = await getUser(email)
-    if (user) {
-      return res.status(400).json({ error: 'User already exist' })
-    }
-    const newUser = await createUser(name, email, password)
-
-    return res.json({
-      user: {
-        id: newUser.id,
-        name: newUser.name,
-        email: newUser.email,
-      },
-    })
-  } catch (error) {
-    console.error(error)
-    return res.status(500).json({ error: 'Server error' });
-  }
-};
-
-
-
->>>>>>> origin/signupfrontend
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body; // Retrieve email and password from request body
 
@@ -146,7 +125,23 @@ export const login = async (req: Request, res: Response) => {
     if (!user) {
       return res.status(400).json({ error: 'User does not exist' });
     }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: 'Invalid password' });
+    }
+    // Create a JWT token
+    const token = jwt.sign(
+      {
+        userId: user.id,
+        userEmail: user.email,
+      },
+      JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
     return res.json({
+      token,
       user: {
         id: user.id,
         name: user.name,
