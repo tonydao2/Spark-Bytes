@@ -23,6 +23,6 @@ app.use('/api', helloRouter);
 app.use('/api/events', eventsRouter);
 app.use('/api/tags', tagsRouter);
 app.use('/api/auth', authRouter);
-  
+
 
 export default app;
