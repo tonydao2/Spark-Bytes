@@ -1,10 +1,7 @@
 import React from "react";
-<<<<<<< HEAD
-import { useState } from "react";
+import { useState, } from "react";
+import { useRouter } from "next/router";
 import { Typography, Card, Input, Button, Space, Form } from "antd";
-=======
-import { Typography, Card, Input, Button, Space } from "antd";
->>>>>>> origin/signupfrontend
 import type { FormItemProps } from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { HomeOutlined } from '@ant-design/icons';
@@ -12,6 +9,11 @@ import { HomeOutlined } from '@ant-design/icons';
 
 
 const Login: React.FC = () => {
+  const router = useRouter();
+
+  const home = () => {
+    router.push("/");
+  };
 
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [isButtonHovered, setIsButtonHovered] = useState(false);
@@ -19,6 +21,32 @@ const Login: React.FC = () => {
   const handleFormSubmit = async (value: any) => {
     console.log(value)
   }
+
+  const handleLogin = async (email: string, password: string) => {
+    const serverUrl = 'http://localhost:5005/api/auth/login'; // Replace with your server URL
+
+    try {
+      const response = await fetch(serverUrl, {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        // Request was successful
+        const data = await response.json();
+        console.log(data); // Output the response data to the console
+      } else {
+        console.log('Server returned an error:', response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  handleLogin('user@example.com', 'password123'); 
 
   return <div
     style={{
@@ -103,6 +131,7 @@ const Login: React.FC = () => {
               fontWeight: "550",
               fontSize: "30",
             }}
+            onClick={home}
             onMouseEnter={() => setIsButtonHovered(true)}
             onMouseLeave={() => setIsButtonHovered(false)}
           >
