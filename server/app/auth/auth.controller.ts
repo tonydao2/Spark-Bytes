@@ -39,13 +39,7 @@ async function getUser(email: string) {
     const user = await prisma.user.findFirst({
       where: {
         email: email,
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        password: true, // Include the 'password' field
-      },
+      }
     });
     return user;
   } catch (err) {

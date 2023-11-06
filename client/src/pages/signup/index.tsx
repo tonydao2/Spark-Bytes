@@ -16,13 +16,17 @@ export default function Signup() {
 
 
   const handleFormSubmit = async (value: any) => {
-    console.log(value, 'this is value');
     const serverUrl = 'http://localhost:5005/api/auth/signup'
-
+    const { name, email, password } = value;
     try {
+      const RequestBody = {
+        'name': name,
+        'email': email,
+        'password': password
+      }
       const response = await fetch(serverUrl, {
         method: 'POST',
-        body: JSON.stringify(value),
+        body: JSON.stringify(RequestBody),
       })
 
       if (response.ok) {
@@ -69,7 +73,7 @@ export default function Signup() {
           onFinish={handleFormSubmit}
         >
           <div style={{ display: "flex", flexDirection: 'column' }}>
-            <Form.Item label="Name" name="Name"
+            <Form.Item label="Name" name="name"
               rules={[{ required: true }]}
             >
               <Input placeholder="Name" id="Name" />
@@ -77,7 +81,7 @@ export default function Signup() {
 
             <Form.Item
               label="Email Address"
-              name="Email Address"
+              name="email"
               rules={[{
                 type: 'email',
                 message: 'The input is not valid E-mail!',
@@ -95,7 +99,7 @@ export default function Signup() {
 
             <Form.Item
               label="Password"
-              name="Password"
+              name="password"
               rules={[
                 {
                   required: true,
