@@ -1,30 +1,38 @@
 import React from "react";
 import { useState } from "react";
 import { Button, Checkbox, Form, Input } from 'antd';
+import { useRouter } from "next/router";
 
 
 export default function Signup() {
+  const router = useRouter();
+  // Directs to home page
+  const home = () => {
+    router.push("/");
+  };
+
   const [formSubmit, setFormSubmit] = useState(false)
+  const [isButtonHovered, setIsButtonHovered] = useState(false);
 
 
-  const handleFormSubmit = async (value) => {
-    console.log(value)
-    const serverUrl = '/signup'
+  const handleFormSubmit = async (value: any) => {
+    console.log(value, 'this is value');
+    const serverUrl = 'http://localhost:5005/api/auth/signup'
 
     try {
       const response = await fetch(serverUrl, {
         method: 'POST',
-        body: value
+        body: JSON.stringify(value),
       })
 
       if (response.ok) {
         // Request was successful
         const data = await response.json(); // If the server returns a response
-        console.log(data);
+        console.log(data, 'data from server');
 
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
 
 
@@ -32,9 +40,9 @@ export default function Signup() {
   // do a check and return a status quote. If email, 
   // send info to signup backend route 
 
-  const validatePassword = async (rule, value) => {
+  const validatePassword = async (rule: any, value: any) => {
     if (value.length < 8) {
-      return Error("Password has to be at least 8 characters long")
+      throw new Error("Password has to be at least 8 characters long")
     }
     else if (!/[0-9]/.test(value)) {
       throw new Error('Password must include at least one number')
@@ -114,14 +122,21 @@ export default function Signup() {
 
         </Form>
 
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <a href="" style={{ textDecoration: 'none' }}>
-            <span style={{ color: " #439847", fontSize: '14px', fontWeight: 'bold' }}>
-              Back to Home</span>
-          </a>
-
+        <div style={{ textAlign: "center" }}>
+          <Button
+            type="link"
+            style={{
+              color: isButtonHovered ? "#69B1FF" : "#439847",
+              fontWeight: "550",
+              fontSize: "30",
+            }}
+            onClick={home}
+            onMouseEnter={() => setIsButtonHovered(true)}
+            onMouseLeave={() => setIsButtonHovered(false)}
+          >
+            Back to home
+          </Button>
         </div>
-
 
       </div >
 
