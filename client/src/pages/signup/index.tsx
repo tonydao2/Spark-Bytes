@@ -11,36 +11,40 @@ export default function Signup() {
     router.push("/");
   };
 
-  const [formSubmit, setFormSubmit] = useState(false)
+  const login = () => {
+    router.push("/login");
+  };
+
+  const [formSubmit, setFormSubmit] = useState(false);
   const [isButtonHovered, setIsButtonHovered] = useState(false);
 
-
   const handleFormSubmit = async (value: any) => {
-    const serverUrl = 'http://localhost:5005/api/auth/signup'
+    const serverUrl = "http://localhost:5005/api/auth/signup";
     const { name, email, password } = value;
     try {
-      const RequestBody = {
-        'name': name,
-        'email': email,
-        'password': password
-      }
+      const requestBody = {
+        name: name,
+        email: email,
+        password: password,
+      };
+      console.log(requestBody);
       const response = await fetch(serverUrl, {
-        method: 'POST',
-        body: JSON.stringify(RequestBody),
-      })
+        method: "POST",
+        body: JSON.stringify(requestBody),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (response.ok) {
         // Request was successful
         const data = await response.json(); // If the server returns a response
-        console.log(data, 'data from server');
-
+        console.log(data, "data from server");
       }
     } catch (error) {
       console.log(error);
     }
-
-
-  }
+  };
   // do a check and return a status quote. If email, 
   // send info to signup backend route 
 
