@@ -11,32 +11,40 @@ export default function Signup() {
     router.push("/");
   };
 
-  const [formSubmit, setFormSubmit] = useState(false)
+  const login = () => {
+    router.push("/login");
+  };
+
+  const [formSubmit, setFormSubmit] = useState(false);
   const [isButtonHovered, setIsButtonHovered] = useState(false);
 
-
   const handleFormSubmit = async (value: any) => {
-    console.log(value, 'this is value');
-    const serverUrl = 'http://localhost:5005/api/auth/signup'
-
+    const serverUrl = "http://localhost:5005/api/auth/signup";
+    const { name, email, password } = value;
     try {
+      const requestBody = {
+        name: name,
+        email: email,
+        password: password,
+      };
+      console.log(requestBody);
       const response = await fetch(serverUrl, {
-        method: 'POST',
-        body: JSON.stringify(value),
-      })
+        method: "POST",
+        body: JSON.stringify(requestBody),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (response.ok) {
         // Request was successful
         const data = await response.json(); // If the server returns a response
-        console.log(data, 'data from server');
-
+        console.log(data, "data from server");
       }
     } catch (error) {
       console.log(error);
     }
-
-
-  }
+  };
   // do a check and return a status quote. If email, 
   // send info to signup backend route 
 
@@ -69,7 +77,7 @@ export default function Signup() {
           onFinish={handleFormSubmit}
         >
           <div style={{ display: "flex", flexDirection: 'column' }}>
-            <Form.Item label="Name" name="Name"
+            <Form.Item label="Name" name="name"
               rules={[{ required: true }]}
             >
               <Input placeholder="Name" id="Name" />
@@ -77,7 +85,7 @@ export default function Signup() {
 
             <Form.Item
               label="Email Address"
-              name="Email Address"
+              name="email"
               rules={[{
                 type: 'email',
                 message: 'The input is not valid E-mail!',
@@ -95,7 +103,7 @@ export default function Signup() {
 
             <Form.Item
               label="Password"
-              name="Password"
+              name="password"
               rules={[
                 {
                   required: true,
