@@ -39,8 +39,9 @@ const Login: React.FC = () => {
       if (response.ok) {
         // Request was successful
         const data = await response.json();
-        console.log(data); // Output the response data to the console
+        console.log(data); // Output the response data to the console\
         updateAuthToken(data.token);
+
       } else {
         console.log('Server returned an error:', response.status, response.statusText);
 
