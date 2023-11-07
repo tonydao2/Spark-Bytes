@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 
 
 export default function Signup() {
+
   const router = useRouter();
   // Directs to home page
   const home = () => {
@@ -36,10 +37,12 @@ export default function Signup() {
         },
       });
 
+
       if (response.ok) {
         // Request was successful
         const data = await response.json(); // If the server returns a response
-        console.log(data, "data from server");
+
+        console.log(data);
       }
     } catch (error) {
       console.log(error);
@@ -49,6 +52,7 @@ export default function Signup() {
   // send info to signup backend route 
 
   const validatePassword = async (rule: any, value: any) => {
+
     if (value.length < 8) {
       return Error("Password has to be at least 8 characters long")
     }
@@ -77,7 +81,9 @@ export default function Signup() {
           onFinish={handleFormSubmit}
         >
           <div style={{ display: "flex", flexDirection: 'column' }}>
+
             <Form.Item label="Name" name="name"
+
               rules={[{ required: true }]}
             >
               <Input placeholder="Name" id="Name" />
@@ -85,7 +91,9 @@ export default function Signup() {
 
             <Form.Item
               label="Email Address"
+
               name="email"
+
               rules={[{
                 type: 'email',
                 message: 'The input is not valid E-mail!',
@@ -103,7 +111,9 @@ export default function Signup() {
 
             <Form.Item
               label="Password"
+
               name="password"
+
               rules={[
                 {
                   required: true,
