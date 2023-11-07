@@ -1,14 +1,11 @@
 import React from "react";
 import { useState } from "react";
-import { Button, Checkbox, Form, Input } from 'antd';
+import { Button, Form, Input } from 'antd';
 import { useRouter } from "next/router";
-import { useAuth } from "@/contexts/AuthContext";
 
 
 export default function Signup() {
   const router = useRouter();
-  // auth edit 
-  const { updateAuthToken } = useAuth() // authenticate
 
   // Directs to home page
   const home = () => {
@@ -34,7 +31,6 @@ export default function Signup() {
         password: password,
       };
 
-
       const response = await fetch(serverUrl, {
         method: "POST",
         body: JSON.stringify(requestBody),
@@ -48,13 +44,7 @@ export default function Signup() {
       if (response.ok) {
         // Request was successful
         const data = await response.json(); // If the server returns a response
-        console.log(data, "data from server");
-        //updateAuthToken(data.id)
-
-        const token = data.id
-        updateAuthToken(token) // updates token in storage 
-        console.log('hi')
-        //redirectToLogin()
+        redirectToLogin()
       }
 
       else {
@@ -62,12 +52,9 @@ export default function Signup() {
         if (response.status === 409) {
           alert("CONFLICT: USER ALREADY EXIST")
         }
-
         else {
           alert(response.statusText)
         }
-
-
       }
     } catch (error) {
       console.log(error);
@@ -108,7 +95,7 @@ export default function Signup() {
         >
           <div style={{ display: "flex", flexDirection: 'column' }}>
             <Form.Item label="Name" name="name"
-              //rules={[{ required: true }]}
+              rules={[{ required: true }]}
             >
               <Input placeholder="Name" id="Name" />
             </Form.Item>
