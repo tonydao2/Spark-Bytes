@@ -108,6 +108,7 @@ export const signup = async (req: Request, res: Response) => {
   if (status) {
     return res.status(409).send('CONFLICT: user already exist');
   }
+
   const hashPw = await hasher(password);
   const newUser = await createUser(name, email, hashPw);
   console.log(newUser);
@@ -139,6 +140,7 @@ export const login = async (req: Request, res: Response) => {
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
+
     if (!isPasswordValid) {
       return res.status(401).json({ error: 'Invalid password' });
     }
