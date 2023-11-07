@@ -1,7 +1,9 @@
 import React from "react";
+
 import { useState, } from "react";
 import { useRouter } from "next/router";
 import { Typography, Card, Input, Button, Space, Form } from "antd";
+
 import type { FormItemProps } from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { HomeOutlined } from '@ant-design/icons';
@@ -9,6 +11,7 @@ import { HomeOutlined } from '@ant-design/icons';
 
 
 const Login: React.FC = () => {
+
   const router = useRouter();
 
   const home = () => {
@@ -53,6 +56,7 @@ const Login: React.FC = () => {
   };
 
   // handleLogin('testman@bu.edu', 'Testing123'); 
+
 
   return <div
     style={{
@@ -145,7 +149,9 @@ const Login: React.FC = () => {
               fontWeight: "550",
               fontSize: "30",
             }}
+
             onClick={home}
+
             onMouseEnter={() => setIsButtonHovered(true)}
             onMouseLeave={() => setIsButtonHovered(false)}
           >

@@ -10,3 +10,4 @@ router.post('/signup', authController.signup); // went to the route
 router.post('/login', authController.login);
 
 export default router;
+
