@@ -1,38 +1,58 @@
 import React from "react";
 import { useState } from "react";
 import { Button, Checkbox, Form, Input } from 'antd';
+import { useRouter } from "next/router";
 
 
 export default function Signup() {
-  const [formSubmit, setFormSubmit] = useState(false)
 
+  const router = useRouter();
+  // Directs to home page
+  const home = () => {
+    router.push("/");
+  };
 
-  const handleFormSubmit = async (value) => {
-    console.log(value)
-    const serverUrl = '/signup'
+  const login = () => {
+    router.push("/login");
+  };
 
+  const [formSubmit, setFormSubmit] = useState(false);
+  const [isButtonHovered, setIsButtonHovered] = useState(false);
+
+  const handleFormSubmit = async (value: any) => {
+    const serverUrl = "http://localhost:5005/api/auth/signup";
+    const { name, email, password } = value;
     try {
+      const requestBody = {
+        name: name,
+        email: email,
+        password: password,
+      };
+      console.log(requestBody);
       const response = await fetch(serverUrl, {
-        method: 'POST',
-        body: value
-      })
+        method: "POST",
+        body: JSON.stringify(requestBody),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
 
       if (response.ok) {
         // Request was successful
         const data = await response.json(); // If the server returns a response
-        console.log(data);
 
+        console.log(data);
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-
-
-  }
+  };
   // do a check and return a status quote. If email, 
   // send info to signup backend route 
 
-  const validatePassword = async (rule, value) => {
+  const validatePassword = async (rule: any, value: any) => {
+
     if (value.length < 8) {
       return Error("Password has to be at least 8 characters long")
     }
@@ -61,7 +81,9 @@ export default function Signup() {
           onFinish={handleFormSubmit}
         >
           <div style={{ display: "flex", flexDirection: 'column' }}>
-            <Form.Item label="Name" name="Name"
+
+            <Form.Item label="Name" name="name"
+
               rules={[{ required: true }]}
             >
               <Input placeholder="Name" id="Name" />
@@ -69,7 +91,9 @@ export default function Signup() {
 
             <Form.Item
               label="Email Address"
-              name="Email Address"
+
+              name="email"
+
               rules={[{
                 type: 'email',
                 message: 'The input is not valid E-mail!',
@@ -87,7 +111,9 @@ export default function Signup() {
 
             <Form.Item
               label="Password"
-              name="Password"
+
+              name="password"
+
               rules={[
                 {
                   required: true,
@@ -114,14 +140,21 @@ export default function Signup() {
 
         </Form>
 
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <a href="" style={{ textDecoration: 'none' }}>
-            <span style={{ color: " #439847", fontSize: '14px', fontWeight: 'bold' }}>
-              Back to Home</span>
-          </a>
-
+        <div style={{ textAlign: "center" }}>
+          <Button
+            type="link"
+            style={{
+              color: isButtonHovered ? "#69B1FF" : "#439847",
+              fontWeight: "550",
+              fontSize: "30",
+            }}
+            onClick={home}
+            onMouseEnter={() => setIsButtonHovered(true)}
+            onMouseLeave={() => setIsButtonHovered(false)}
+          >
+            Back to home
+          </Button>
         </div>
-
 
       </div >
 

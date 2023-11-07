@@ -1,5 +1,9 @@
 import React from "react";
-import { Typography, Card, Input, Button, Space } from "antd";
+
+import { useState, } from "react";
+import { useRouter } from "next/router";
+import { Typography, Card, Input, Button, Space, Form } from "antd";
+
 import type { FormItemProps } from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { HomeOutlined } from '@ant-design/icons';
@@ -8,8 +12,51 @@ import { HomeOutlined } from '@ant-design/icons';
 
 const Login: React.FC = () => {
 
-  const [passwordVisible, setPasswordVisible] = React.useState(false);
-  const [isButtonHovered, setIsButtonHovered] = React.useState(false);
+  const router = useRouter();
+
+  const home = () => {
+    router.push("/");
+  };
+
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [isButtonHovered, setIsButtonHovered] = useState(false);
+  const [formSubmit, setFormSubmit] = useState(false)
+  const handleFormSubmit = async (value: any) => {
+    console.log(value)
+  }
+
+  const handleLogin = async (values: any) => {
+    const { email, password } = values;
+    const serverUrl = 'http://localhost:5005/api/auth/login'; // Replace with your server URL
+    try {
+      const response = await fetch(serverUrl, {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        // Request was successful
+        const data = await response.json();
+        console.log(data); // Output the response data to the console
+      } else {
+        console.log('Server returned an error:', response.status, response.statusText);
+
+        if (response.status == 400) {
+          alert('No user found');
+        } else if (response.status == 401) {
+          alert('Incorrect password');
+        }
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  // handleLogin('testman@bu.edu', 'Testing123'); 
+
 
   return <div
     style={{
@@ -35,38 +82,65 @@ const Login: React.FC = () => {
             textAlign: "center",
             color: "rgb(69, 90, 100)",
           }}>Log In</Typography.Title>
-        <div style={{
-          margin: "20px",
-        }}>
-          <Typography.Text style={{
-            marginBottom: "5px",
-            color: "rgb(69, 90, 100)",
-          }}>Email Address</Typography.Text>
 
-          <Input
-            placeholder="Email"
-            style={{ marginBottom: "20px" }}
-          />
-          <Typography.Text style={{
-            marginBottom: "5px",
-            color: "rgb(69, 90, 100)"
-          }}>Password</Typography.Text>
-          <Input.Password
-            placeholder="Password"
-            style={{ marginBottom: "20px" }}
-            iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-          />
+        <Form labelCol={{ span: 8 }}
+          wrapperCol={{ span: 0 }}
+          style={{ maxWidth: 600, margin: '0 20px' }}
+          initialValues={{ remember: true }}
+          autoComplete="off"
+          layout="vertical"
+          onFinish={handleLogin}
+        >
 
-          <Button type="primary"
-            style={{
-              backgroundColor: "rgb(102, 187, 106)",
-              border: "none",
-              color: "white",
-              width: "100%"
-            }}
-            icon={<HomeOutlined />}
-          >Log In</Button>
-        </div>
+
+          <div style={{
+            margin: "20px",
+          }}>
+            <Form.Item label="Email Address" name="email"
+              style={{ marginBottom: "5px", color: "rgb(69, 90, 100)", }}
+              rules={[{ required: true }]}
+            >
+              <Input
+                placeholder="Email"
+                id="Email"
+                style={{ marginBottom: "20px" }}
+              />
+            </Form.Item>
+
+
+            <Form.Item label="Password" name="password"
+              style={{ marginBottom: "5px", color: "rgb(69, 90, 100)", }}
+              rules={[{ required: true }]}
+            >
+              <Input.Password
+                placeholder="Password"
+                id="Passworsd"
+                style={{ marginBottom: "20px" }}
+                iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+              />
+            </Form.Item>
+
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit" // This makes the button submit the form
+                style={{
+                  backgroundColor: "rgb(102, 187, 106)",
+                  border: "none",
+                  color: "white",
+                  width: "100%"
+                }}
+                icon={<HomeOutlined />}
+              >
+                Log In
+              </Button>
+            </Form.Item>
+
+          </div>
+
+        </Form>
+
+
         <div style={{ textAlign: "center" }}>
           <Button
             type="link"
@@ -75,6 +149,9 @@ const Login: React.FC = () => {
               fontWeight: "550",
               fontSize: "30",
             }}
+
+            onClick={home}
+
             onMouseEnter={() => setIsButtonHovered(true)}
             onMouseLeave={() => setIsButtonHovered(false)}
           >
