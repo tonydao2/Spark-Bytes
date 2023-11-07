@@ -116,7 +116,7 @@ export const signup = async (req: Request, res: Response) => {
     console.log(newUser);
     return res.status(500).send('ERROR CREATING USER');
   }
-  // assuming it was ssuccess
+  // assuming it was success
   const newToken = {
     id: newUser.id,
     name: name,
@@ -128,6 +128,7 @@ export const signup = async (req: Request, res: Response) => {
 };
 
 export const login = async (req: Request, res: Response) => {
+  console.log(req.body);
   const { email, password } = req.body; // Retrieve email and password from request body
 
   if (!email || !password) {
@@ -167,3 +168,4 @@ export const login = async (req: Request, res: Response) => {
     return res.status(500).json({ error: 'Server error' });
   }
 };
+
