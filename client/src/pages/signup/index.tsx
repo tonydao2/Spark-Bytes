@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 
 
 export default function Signup() {
+
   const router = useRouter();
   // auth edit 
   const { updateAuthToken } = useAuth() // authenticate
@@ -79,6 +80,7 @@ export default function Signup() {
   // send info to signup backend route 
 
   const validatePassword = async (rule: any, value: any) => {
+
     if (value.length < 8) {
       throw new Error("Password has to be at least 8 characters long")
     }
@@ -107,15 +109,20 @@ export default function Signup() {
           onFinish={handleFormSubmit}
         >
           <div style={{ display: "flex", flexDirection: 'column' }}>
+
             <Form.Item label="Name" name="name"
+
               //rules={[{ required: true }]}
+
             >
               <Input placeholder="Name" id="Name" />
             </Form.Item>
 
             <Form.Item
               label="Email Address"
+
               name="email"
+
               rules={[{
                 type: 'email',
                 message: 'The input is not valid E-mail!',
@@ -133,7 +140,9 @@ export default function Signup() {
 
             <Form.Item
               label="Password"
+
               name="password"
+
               rules={[
                 {
                   required: true,
