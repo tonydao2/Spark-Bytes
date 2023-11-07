@@ -7,6 +7,7 @@ import { Typography, Card, Input, Button, Space, Form } from "antd";
 import type { FormItemProps } from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { HomeOutlined } from '@ant-design/icons';
+import { useAuth } from "../../contexts/AuthContext"; 
 
 
 
@@ -18,6 +19,7 @@ const Login: React.FC = () => {
     router.push("/");
   };
 
+  const { updateAuthToken } = useAuth();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [isButtonHovered, setIsButtonHovered] = useState(false);
   const [formSubmit, setFormSubmit] = useState(false)
@@ -40,7 +42,9 @@ const Login: React.FC = () => {
       if (response.ok) {
         // Request was successful
         const data = await response.json();
-        console.log(data); // Output the response data to the console
+        console.log(data); // Output the response data to the console\
+        updateAuthToken(data.token);
+
       } else {
         console.log('Server returned an error:', response.status, response.statusText);
 
