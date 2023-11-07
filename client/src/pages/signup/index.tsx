@@ -2,33 +2,40 @@ import React from "react";
 import { useState } from "react";
 import { Button, Checkbox, Form, Input } from 'antd';
 import { useRouter } from "next/router";
+import { useAuth } from "@/contexts/AuthContext";
 
 
 export default function Signup() {
 
   const router = useRouter();
+  // auth edit 
+  const { updateAuthToken } = useAuth() // authenticate
+
   // Directs to home page
   const home = () => {
     router.push("/");
   };
 
-  const login = () => {
+  const redirectToLogin = () => {
     router.push("/login");
   };
 
   const [formSubmit, setFormSubmit] = useState(false);
   const [isButtonHovered, setIsButtonHovered] = useState(false);
 
+
   const handleFormSubmit = async (value: any) => {
     const serverUrl = "http://localhost:5005/api/auth/signup";
     const { name, email, password } = value;
+
     try {
       const requestBody = {
         name: name,
         email: email,
         password: password,
       };
-      console.log(requestBody);
+
+
       const response = await fetch(serverUrl, {
         method: "POST",
         body: JSON.stringify(requestBody),
@@ -38,23 +45,44 @@ export default function Signup() {
       });
 
 
+
       if (response.ok) {
         // Request was successful
         const data = await response.json(); // If the server returns a response
+        console.log(data, "data from server");
+        //updateAuthToken(data.id)
 
-        console.log(data);
+        const token = data.id
+        updateAuthToken(token) // updates token in storage 
+        console.log('hi')
+        //redirectToLogin()
+      }
+
+      else {
+        console.log(response)
+        if (response.status === 409) {
+          alert("CONFLICT: USER ALREADY EXIST")
+        }
+
+        else {
+          alert(response.statusText)
+        }
+
+
       }
     } catch (error) {
       console.log(error);
+
     }
   };
+
   // do a check and return a status quote. If email, 
   // send info to signup backend route 
 
   const validatePassword = async (rule: any, value: any) => {
 
     if (value.length < 8) {
-      return Error("Password has to be at least 8 characters long")
+      throw new Error("Password has to be at least 8 characters long")
     }
     else if (!/[0-9]/.test(value)) {
       throw new Error('Password must include at least one number')
@@ -84,7 +112,8 @@ export default function Signup() {
 
             <Form.Item label="Name" name="name"
 
-              rules={[{ required: true }]}
+              //rules={[{ required: true }]}
+
             >
               <Input placeholder="Name" id="Name" />
             </Form.Item>
