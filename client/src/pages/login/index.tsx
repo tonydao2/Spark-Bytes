@@ -11,6 +11,7 @@ import { useAuth } from "../../contexts/AuthContext";
 
 
 
+
 const Login: React.FC = () => {
 
   const router = useRouter();
@@ -19,10 +20,15 @@ const Login: React.FC = () => {
     router.push("/");
   };
 
+  const redirectToProtected = () => {
+    router.push('/protected')
+  }
+
   const { updateAuthToken } = useAuth();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [isButtonHovered, setIsButtonHovered] = useState(false);
   const [formSubmit, setFormSubmit] = useState(false)
+
   const handleFormSubmit = async (value: any) => {
     console.log(value)
   }
@@ -44,6 +50,8 @@ const Login: React.FC = () => {
         const data = await response.json();
         console.log(data); // Output the response data to the console\
         updateAuthToken(data.token);
+        redirectToProtected()
+
 
       } else {
         console.log('Server returned an error:', response.status, response.statusText);
