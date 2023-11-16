@@ -60,14 +60,15 @@ export default function eventId() {
 
     // create a class that prints out the information fetched
     return (
-        <div style={{ display: 'flex', justifyContent: "center", alignItems: "center", height: "100vh" }}>
-            <Card title={event && event_id} style={{ margin: "20px", textAlign: "center", maxWidth: '60%', }}>
+        <div style={{ display: 'flex', justifyContent: "center", alignItems: "center", height: "100vh", backgroundColor: 'rgb(234, 247, 240)', }}>
+            <Card title={event && event_id} style={{ margin: "20px", textAlign: "center", maxWidth: '60%', borderRadius: "3rem" }}>
                 <p style={{ textAlign: "center" }}>{event && event.description}</p>
                 {event && event.photos.length > 0 && <Image width={200} src={event.photos[0]} />}
                 <div>
-                    <Descriptions>
+                    <Descriptions style={{ display: 'flex', justifyContent: "center", alignItems: "center", textAlign: 'center' }}>
                         <Descriptions.Item label="Event Created By">{event && event.createdBy.name}</Descriptions.Item>
                         <Descriptions.Item label="Event Created At">{event && formatDate(event.createdAt)}</Descriptions.Item>
+                        <Descriptions.Item label="Location">{event && event.location != null ? event.location : 'n/a'}</Descriptions.Item>
                     </Descriptions>
 
                     <Descriptions>
