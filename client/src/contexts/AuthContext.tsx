@@ -16,7 +16,6 @@ const initialState: IAuthState = {
 
 interface IAuthContext {
   authState: IAuthState | undefined;
-  getAuthState: () => IAuthState;
   updateAuthToken: (token: string) => void;
   clearAuthState: () => void;
   isAuthenticated: () => boolean;
@@ -25,7 +24,6 @@ interface IAuthContext {
 // create a context for managing user state
 export const AuthContext = createContext<IAuthContext>({
   authState: undefined,
-  getAuthState: () => null,
   updateAuthToken: () => null,
   clearAuthState: () => null,
   isAuthenticated: () => false,
@@ -48,16 +46,7 @@ const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
    * - clearAuthState: Clears the authentication state and removes the JWT token from local storage. This effectively logs the user out.
    * - isAuthenticated: Returns a boolean indicating whether the user is authenticated or not.
    */
-
-  const [authState, setAuthState] = useState<IAuthState>(() => initialState);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      const authState = generateAuthStateFromToken(token);
-      setAuthState(authState);
-    }
-  }, []);
+  const [authState, setAuthState] = useState<IAuthState>(initialState);
 
   function generateAuthStateFromToken(token: string): IAuthState {
     /**
@@ -88,9 +77,7 @@ const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
      * @returns void
      */
     const authState = generateAuthStateFromToken(token);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("token", token);
-    }
+    localStorage.setItem("token", token);
     setAuthState(authState);
   }, []);
 
@@ -124,32 +111,17 @@ const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
     return decodedState.decodedToken.exp * 1000 > Date.now();
   }, [authState.token]);
 
-  const getAuthState = () => {
-    /**
-     * This function gets the auth state
-     * @returns authState
-     */
-    if (typeof window === "undefined") {
-      return authState;
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      updateAuthToken(token);
     }
-    const token = authState.token || localStorage.getItem("token");
-    if (!token) {
-      return authState;
-    }
-    const decodedState = generateAuthStateFromToken(token);
-    return decodedState;
-  };
+  }, [updateAuthToken]);
 
   // this allows childrens to access the user state
   return (
     <AuthContext.Provider
-      value={{
-        authState,
-        getAuthState,
-        updateAuthToken,
-        clearAuthState,
-        isAuthenticated,
-      }}
+      value={{ authState, updateAuthToken, clearAuthState, isAuthenticated }}
     >
       {children}
     </AuthContext.Provider>
