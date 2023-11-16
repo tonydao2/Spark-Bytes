@@ -105,7 +105,6 @@ export default function Signup() {
 
             <Form.Item
               label="Email Address"
-
               name="email"
 
               rules={[{
