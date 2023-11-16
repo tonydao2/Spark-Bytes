@@ -73,7 +73,7 @@ export default function eventId() {
                     <Descriptions>
                         <Descriptions.Item label="Quantity">{event && event.qty}</Descriptions.Item>
                         <Descriptions.Item label="Expiration Time">{event && formatDate(event.exp_time)}</Descriptions.Item>
-                        <Descriptions.Item label="Tags">{event && event.tags.length > 0 && event.tags.join(",'")}
+                        <Descriptions.Item label="Tags">{event && event.tags.length > 0 ? event.tags.join(",'") : 'n/a'}
                         </Descriptions.Item>
                     </Descriptions>
                 </div>
