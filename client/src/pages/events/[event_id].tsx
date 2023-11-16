@@ -3,11 +3,15 @@ import { useEffect, useState } from "react";
 import { API_URL } from "@/common/constants";
 import { Card, Descriptions } from 'antd'
 
+import { useAuth } from "@/contexts/AuthContext";
+
 
 export default function eventId() {
     // expands the url and its query 
     const router = useRouter()
-    const { event_Id } = router.query
+    const { getAuthState, authState } = useAuth();
+    const { event_id } = router.query
+
 
     // fetches data from the api and store it in a variable 
     const [event, setEvent] = useState({})
@@ -16,8 +20,16 @@ export default function eventId() {
     useEffect(() => {
         // function used to fetch data 
         const fetchData = async () => {
+            console.log(router.query)
+            console.log(event_id)
             try {
-                const response = await fetch(`${API_URL}/api/events/${event_Id}`)
+                const response = await fetch(`${API_URL}/api/events/${event_id}`, {
+                    headers: {
+                        Authorization: `Bearer ${getAuthState()?.token}`,
+                    },
+                })
+
+                console.log(response)
                 if (response.ok) {
                     const data = await response.json()
                     setEvent(data)
