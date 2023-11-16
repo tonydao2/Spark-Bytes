@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { API_URL } from "@/common/constants";
-import { Card, Descriptions } from 'antd'
+import { Card, Descriptions, Image } from 'antd'
 
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -13,8 +13,9 @@ export default function eventId() {
     const { event_id } = router.query
 
 
+
     // fetches data from the api and store it in a variable 
-    const [event, setEvent] = useState({})
+    const [event, setEvent] = useState(null)
 
 
     useEffect(() => {
@@ -28,25 +29,31 @@ export default function eventId() {
                         Authorization: `Bearer ${getAuthState()?.token}`,
                     },
                 })
-
-                console.log(response)
                 if (response.ok) {
                     const data = await response.json()
+                    console.log(data)
                     setEvent(data)
+                    { event && console.log(event) }
 
                 } else {
                     // add error checking 
                     console.log('error')
                 }
+
             } catch (err) {
                 // add error checking 
                 console.log(err)
             }
         }
-
         fetchData()
 
-    }, [])
+    }, [event_id, getAuthState])
+
+    const formatDate = (date: string) => {
+        const newDate = new Date(date);
+        const resDate = `${newDate.toLocaleDateString()} `
+        return resDate
+    }
 
 
 
@@ -54,13 +61,23 @@ export default function eventId() {
     // create a class that prints out the information fetched
     return (
         <div style={{ display: 'flex', justifyContent: "center", alignItems: "center", height: "100vh" }}>
-            <Card title="Event Title" style={{ margin: "20px", textAlign: "center", maxWidth: '60%', }}>
-                <p style={{ textAlign: "center" }}>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Accusamus placeat maiores facilis suscipit, architecto tempore culpa qui voluptas fugiat minima officiis odit quod sunt, dolorum in quo nostrum quae molestias?</p>
-                <Descriptions>
-                    <Descriptions.Item label="Quantity">1</Descriptions.Item>
-                    <Descriptions.Item label="Expiration Time">1/1/11</Descriptions.Item>
-                    <Descriptions.Item label="Tags">Hi</Descriptions.Item>
-                </Descriptions>
+            <Card title={event && event_id} style={{ margin: "20px", textAlign: "center", maxWidth: '60%', }}>
+                <p style={{ textAlign: "center" }}>{event && event.description}</p>
+                {event && event.photos.length > 0 && <Image width={200} src={event.photos[0]} />}
+                <div>
+                    <Descriptions>
+                        <Descriptions.Item label="Event Created By">{event && event.createdBy.name}</Descriptions.Item>
+                        <Descriptions.Item label="Event Created At">{event && formatDate(event.createdAt)}</Descriptions.Item>
+                    </Descriptions>
+
+                    <Descriptions>
+                        <Descriptions.Item label="Quantity">{event && event.qty}</Descriptions.Item>
+                        <Descriptions.Item label="Expiration Time">{event && formatDate(event.exp_time)}</Descriptions.Item>
+                        <Descriptions.Item label="Tags">{event && event.tags.length > 0 && event.tags.join(",'")}
+                        </Descriptions.Item>
+                    </Descriptions>
+                </div>
+
 
             </Card>
         </div >
