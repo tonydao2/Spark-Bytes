@@ -1,7 +1,49 @@
-import React from 'react'
+import { useEffect, FC, useState } from "react";
 import { Typography, Button, Form, Input, DatePicker } from 'antd'
+import { useAuth } from "@/contexts/AuthContext";
+import { BoldOutlined } from "@ant-design/icons";
+import { useRouter } from "next/router";
 
-function create() {
+const Create: FC = () => {
+    const router = useRouter();
+
+    const { getAuthState, authState } = useAuth();
+    const event = () => {
+        router.push("/events");
+    }
+
+    const createEvent = async (value: any) => {
+        const serverUrl = "http://localhost:5005/api/events/create";
+        const { ExpirationTime, Description, Quantity, Tag } = value;
+        console.log(value);
+        try {
+            console.log({ ExpirationTime, Description, Quantity, Tag })
+            const response = await fetch(serverUrl, {
+                method: "POST",
+                body: JSON.stringify({
+                    exp_time: ExpirationTime,
+                    description: Description,
+                    qty: Quantity,
+                    tags: Tag
+                }),
+                headers: {
+                    Authorization: `Bearer ${getAuthState()?.token}`,
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (response.ok) {
+                // Request was successful
+                const data = await response.json(); // If the server returns a response
+                alert("Event Created");
+                event();
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
     return (
         <div
             style={{
@@ -24,6 +66,7 @@ function create() {
                 initialValues={{ remember: true }}
                 autoComplete="off"
                 layout="vertical"
+                onFinish={createEvent}
             >
 
 
@@ -52,7 +95,7 @@ function create() {
                         />
                     </Form.Item>
 
-                    <Form.Item label="Expiration Time" name="Expiration Time"
+                    <Form.Item label="Expiration Time" name="ExpirationTime"
                         style={{ marginBottom: "5px", color: "rgb(69, 90, 100)", }}
                         rules={[{ required: true }]}
                     >
@@ -99,4 +142,4 @@ function create() {
     )
 }
 
-export default create
+export default Create
