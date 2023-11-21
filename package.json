@@ -4,9 +4,10 @@
   "description": "",
   "main": "server.ts",
   "scripts": {
-    "start": "ts-node  ./server.ts",
-    "dev": "nodemon ./server.ts"
-  },
+    "start": "npm run generate && ts-node ./server.ts",
+    "dev": "npm run generate && nodemon ./server.ts",
+    "generate": "prisma generate"
+  },  
   "author": "",
   "license": "ISC",
   "dependencies": {
