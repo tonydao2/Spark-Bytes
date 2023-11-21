@@ -3,6 +3,7 @@ import { Typography, Button, Form, Input, DatePicker } from 'antd'
 import { useAuth } from "@/contexts/AuthContext";
 import { BoldOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
+import { API_URL } from "@/common/constants";
 
 const Create: FC = () => {
     const router = useRouter();
@@ -13,7 +14,7 @@ const Create: FC = () => {
     }
 
     const createEvent = async (value: any) => {
-        const serverUrl = "http://localhost:5005/api/events/create";
+        const serverUrl = `${API_URL}/api/events/create`;
         const { ExpirationTime, Description, Quantity, Tag } = value;
         console.log(value);
         try {
