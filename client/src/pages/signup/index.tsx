@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { Button, Form, Input } from 'antd';
 import { useRouter } from "next/router";
-
+import { API_URL } from "@/common/constants";
 
 export default function Signup() {
 
@@ -22,7 +22,7 @@ export default function Signup() {
 
 
   const handleFormSubmit = async (value: any) => {
-    const serverUrl = "http://localhost:5005/api/auth/signup";
+    const serverUrl = `${API_URL}/api/auth/signup`;
     const { name, email, password } = value;
 
     try {

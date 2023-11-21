@@ -8,7 +8,7 @@ import type { FormItemProps } from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { HomeOutlined } from '@ant-design/icons';
 import { useAuth } from "../../contexts/AuthContext"; 
-
+import { API_URL } from "@/common/constants";
 
 
 
@@ -35,7 +35,7 @@ const Login: React.FC = () => {
 
   const handleLogin = async (values: any) => {
     const { email, password } = values;
-    const serverUrl = 'http://localhost:5005/api/auth/login'; // Replace with your server URL
+    const serverUrl = `${API_URL}/api/auth/login`; // Replace with your server URL
     try {
       const response = await fetch(serverUrl, {
         method: 'POST',
