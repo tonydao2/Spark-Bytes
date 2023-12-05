@@ -1,5 +1,7 @@
 import { useEffect, FC, useState } from "react";
-import { Typography, Button, Form, Input, DatePicker } from 'antd'
+import { Typography, Button, Form, Input, DatePicker, Upload, UploadProps } from 'antd'
+import type { UploadFile } from 'antd/lib/upload/interface';
+import { UploadOutlined } from '@ant-design/icons';
 import { useAuth } from "@/contexts/AuthContext";
 import { BoldOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
@@ -12,6 +14,36 @@ const Create: FC = () => {
     const event = () => {
         router.push("/events");
     }
+
+    const [fileList, setFileList] = useState<UploadFile[]>([
+        {
+            uid: '-1',
+            name: 'image.png',
+            status: 'done',
+            url: 'http://www.baidu.com/xxx.png',
+        }
+    ]);
+
+    const handleChange: UploadProps['onChange'] = (info) => {
+        let newFileList = [...info.fileList];
+
+        newFileList = newFileList.slice(-2);
+
+        newFileList = newFileList.map((file) => {
+            if (file.response) {
+                file.url = file.response.url;
+            }
+            return file;
+        });
+
+        setFileList(newFileList);
+    }
+
+    const props = {
+        action: 'https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188',
+        onChange: handleChange,
+        multiple: true,
+    };  
 
     const createEvent = async (value: any) => {
         const serverUrl = `${API_URL}/api/events/create`;
@@ -113,6 +145,16 @@ const Create: FC = () => {
                             id="Tag"
                             style={{ marginBottom: "20px" }}
                         />
+                    </Form.Item>
+
+                    <Form.Item label="Upload" name="Upload"
+                        style={{ marginBottom: "5px", color: "rgb(69, 90, 100)", }}
+                        rules={[{ required: true }]}
+                    >
+                        <Upload {...props} fileList={fileList}>
+                            <Button icon={<UploadOutlined />}>Upload</Button>
+                        </Upload>
+
                     </Form.Item>
 
 
