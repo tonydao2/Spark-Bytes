@@ -22,6 +22,7 @@ interface ITokenState {
   rawToken: string;
   decodedToken: IAuthTokenDecoded;
 }
+
 const Events: FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [events, setEvents] = useState<IEvent[]>([]);
