@@ -98,10 +98,6 @@ export const get_event_by_id = async (req: Request, res: Response) => {
 
 export const create_event = async (req: Request, res: Response) => {
   const { exp_time, description, qty, tags, photos } = req.body;
-  
-  console.log('Received Photos:', photos);
-  console.log('Entire Request Body:', req.body);
-
 
   try {
     const userId = req.body.user.userId;
@@ -112,6 +108,13 @@ export const create_event = async (req: Request, res: Response) => {
     // const photoBase64 = photoBuffer.toString('base64'); // Convert Buffer to base64 string
     console.log('Value of tags:', tags);
     console.log(tags.connect);
+    const photoEntries = photos.map((photo) => {
+      return {
+        photo: photo, // Assuming 'photo' is in the format Prisma expects
+        // If additional processing is needed, do it here
+      };
+    });
+
     const newEvent = await prisma.event.create({
       data: {
         post_time: now,
@@ -136,11 +139,9 @@ export const create_event = async (req: Request, res: Response) => {
         //     loc_note: location.loc_note,
         //   },
         // },
-        // photos: {
-        //   create: {
-        //     photo: photoBase64,
-        //   },
-        // },
+        photos: {
+          create: photoEntries,
+        },
       },
     });
 
