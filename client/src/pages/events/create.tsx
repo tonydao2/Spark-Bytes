@@ -39,9 +39,25 @@ const Create: FC = () => {
         setPreviewTitle(file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1));
     };
 
-    const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) =>
-        setFileList(newFileList);
-        console.log(fileList);
+    const handleFileListChange = async (info: any) => {
+        const updatedFileList = await Promise.all(
+            info.fileList.map(async (file: any) => {
+                if (file.originFileObj) {
+                    const fileUrl = await getBase64(file.originFileObj);
+                    return {
+                        uid: file.uid,
+                        name: file.name,
+                        status: file.status,
+                        url: fileUrl,
+                    }
+                }
+                return file;
+            }),
+        );
+
+        setFileList(updatedFileList);
+        console.log(updatedFileList);
+    }
 
     const uploadButton = (
         <div>
@@ -50,25 +66,22 @@ const Create: FC = () => {
         </div>
     );
 
-    const props = {
-        action: 'https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188',
-        onChange: handleChange,
-        multiple: true,
-    };  
 
     const createEvent = async (value: any) => {
         const serverUrl = `${API_URL}/api/events/create`;
         const { ExpirationTime, Description, Quantity, Tag } = value;
-        console.log(value);
+        const photoURLs = fileList.map(file => file.url || "");
+
         try {
-            console.log({ ExpirationTime, Description, Quantity, Tag })
+            console.log({ ExpirationTime, Description, Quantity, Tag, photoURLs })
             const response = await fetch(serverUrl, {
                 method: "POST",
                 body: JSON.stringify({
                     exp_time: ExpirationTime,
                     description: Description,
                     qty: Quantity,
-                    tags: Tag
+                    tags: Tag,
+                    photos: photoURLs,
                 }),
                 headers: {
                     Authorization: `Bearer ${getAuthState()?.token}`,
@@ -162,11 +175,10 @@ const Create: FC = () => {
                         rules={[{ required: true }]}
                     >
                         <Upload
-                            action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
                             listType="picture-card"
                             fileList={fileList}
                             onPreview={handlePreview}
-                            onChange={handleChange}
+                            onChange={handleFileListChange}
                         >
                             {fileList.length >= 10 ? null : uploadButton}
                         </Upload>
@@ -190,12 +202,9 @@ const Create: FC = () => {
                         </Button>
                     </Form.Item>
 
-
-
                 </div>
 
             </Form>
-
 
         </div>
     )
