@@ -1,11 +1,19 @@
 import { useEffect, FC, useState } from "react";
-import { Typography, Button, Form, Input, DatePicker, Upload, UploadProps } from 'antd'
-import type { UploadFile } from 'antd/lib/upload/interface';
-import { UploadOutlined } from '@ant-design/icons';
+import { Typography, Button, Form, Input, DatePicker, Upload, UploadProps, message, Modal } from 'antd'
+import type { UploadFile, RcFile } from 'antd/lib/upload/interface';
+import { UploadOutline, PlusOutlined } from '@ant-design/icons';
 import { useAuth } from "@/contexts/AuthContext";
 import { BoldOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import { API_URL } from "@/common/constants";
+
+const getBase64 = (file: RcFile): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+});
 
 const Create: FC = () => {
     const router = useRouter();
@@ -15,29 +23,32 @@ const Create: FC = () => {
         router.push("/events");
     }
 
-    const [fileList, setFileList] = useState<UploadFile[]>([
-        {
-            uid: '-1',
-            name: 'image.png',
-            status: 'done',
-            url: 'http://www.baidu.com/xxx.png',
+    const [fileList, setFileList] = useState<UploadFile[]>([]);
+    const [uploading, setUploading] = useState(false);
+    const [previewOpen, setPreviewOpen] = useState(false);
+    const [previewImage, setPreviewImage] = useState('');
+    const [previewTitle, setPreviewTitle] = useState('');
+
+    const handlePreview = async (file: UploadFile) => {
+        if (!file.url && !file.preview) {
+        file.preview = await getBase64(file.originFileObj as RcFile);
         }
-    ]);
 
-    const handleChange: UploadProps['onChange'] = (info) => {
-        let newFileList = [...info.fileList];
+        setPreviewImage(file.url || (file.preview as string));
+        setPreviewOpen(true);
+        setPreviewTitle(file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1));
+    };
 
-        newFileList = newFileList.slice(-2);
-
-        newFileList = newFileList.map((file) => {
-            if (file.response) {
-                file.url = file.response.url;
-            }
-            return file;
-        });
-
+    const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) =>
         setFileList(newFileList);
-    }
+        console.log(fileList);
+
+    const uploadButton = (
+        <div>
+        <PlusOutlined />
+        <div style={{ marginTop: 8 }}>Upload</div>
+        </div>
+    );
 
     const props = {
         action: 'https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188',
@@ -66,8 +77,7 @@ const Create: FC = () => {
             });
 
             if (response.ok) {
-                // Request was successful
-                const data = await response.json(); // If the server returns a response
+                const data = await response.json();
                 alert("Event Created");
                 event();
             }
@@ -147,12 +157,18 @@ const Create: FC = () => {
                         />
                     </Form.Item>
 
-                    <Form.Item label="Upload" name="Upload"
+                    <Form.Item label="Upload Image" name="Upload"
                         style={{ marginBottom: "5px", color: "rgb(69, 90, 100)", }}
                         rules={[{ required: true }]}
                     >
-                        <Upload {...props} fileList={fileList}>
-                            <Button icon={<UploadOutlined />}>Upload</Button>
+                        <Upload
+                            action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+                            listType="picture-card"
+                            fileList={fileList}
+                            onPreview={handlePreview}
+                            onChange={handleChange}
+                        >
+                            {fileList.length >= 10 ? null : uploadButton}
                         </Upload>
 
                     </Form.Item>
@@ -168,9 +184,9 @@ const Create: FC = () => {
                                 color: "white",
                                 width: "100%"
                             }}
-
+                            loading={uploading}
                         >
-                            Submit
+                            {uploading ? 'Uploading' : 'Submit'}
                         </Button>
                     </Form.Item>
 
