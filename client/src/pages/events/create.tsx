@@ -14,18 +14,27 @@ const Create: FC = () => {
     }
 
     const createEvent = async (value: any) => {
+
         const serverUrl = `${API_URL}/api/events/create`;
-        const { ExpirationTime, Description, Quantity, Tag } = value;
-        console.log(value);
+        const { ExpirationTime, Description, Quantity, Tag, Address, floor, room, loc_note } = value;
+
+        console.log(Address);
         try {
-            console.log({ ExpirationTime, Description, Quantity, Tag })
+
             const response = await fetch(serverUrl, {
                 method: "POST",
                 body: JSON.stringify({
                     exp_time: ExpirationTime,
                     description: Description,
                     qty: Quantity,
-                    tags: Tag
+                    tags: Tag,
+                    location: {
+                        Address: Address,
+                        floor: floor,
+                        room: room,
+                        loc_note: loc_note
+
+                    }
                 }),
                 headers: {
                     Authorization: `Bearer ${getAuthState()?.token}`,
@@ -36,7 +45,9 @@ const Create: FC = () => {
             if (response.ok) {
                 // Request was successful
                 const data = await response.json(); // If the server returns a response
-                alert("Event Created");
+                console.log('-----')
+                console.log(data)
+                alert("Event Created"); //uncomment later
                 event();
             }
         } catch (error) {
@@ -44,6 +55,13 @@ const Create: FC = () => {
         }
     }
 
+    const validateLocation = async (rule: any, value: any) => {
+        if (!value || value.trim() == '') {
+            throw new Error('Location must be non empty')
+        }
+
+
+    }
 
     return (
         <div
@@ -114,6 +132,55 @@ const Create: FC = () => {
                             style={{ marginBottom: "20px" }}
                         />
                     </Form.Item>
+
+                    <Form.Item label="Address" name="Address"
+                        style={{ marginBottom: "5px", color: "rgb(69, 90, 100)", }}
+                        rules={[{ required: true }, { validator: validateLocation }]}
+                    >
+                        <Input
+                            placeholder="Address"
+                            id="Address"
+                            style={{ marginBottom: "20px" }}
+                        />
+                    </Form.Item>
+
+                    <div style={{ display: 'flex' }}>
+
+                        <Form.Item label="Floor #" name="floor"
+                            style={{ marginRight: '5px', marginBottom: "5px", color: "rgb(69, 90, 100)", width: '50%' }}
+                            rules={[{ required: true }, { validator: validateLocation }]} // fix validator for int
+                        >
+                            <Input
+                                placeholder="Floor"
+                                id="floor"
+                                style={{ marginBottom: "20px" }}
+                            />
+                        </Form.Item>
+
+                        <Form.Item label="Room #" name="room"
+                            style={{ marginBottom: "5px", color: "rgb(69, 90, 100)", width: '50%' }}
+                            rules={[{ required: true }, { validator: validateLocation }]}
+                        >
+                            <Input
+                                placeholder="Room"
+                                id="room"
+                                style={{ marginBottom: "20px" }}
+                            />
+                        </Form.Item>
+                    </div>
+
+                    <Form.Item label="Location Notes" name="loc_note"
+                        style={{ marginBottom: "5px", color: "rgb(69, 90, 100)", }}
+                        rules={[{ required: true }, { validator: validateLocation }]}
+                    >
+                        <Input
+                            placeholder="Location Notes"
+                            id="loc_note"
+                            style={{ marginBottom: "20px" }}
+                        />
+                    </Form.Item>
+
+
 
 
                     <Form.Item>
