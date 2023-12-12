@@ -101,17 +101,12 @@ export const create_event = async (req: Request, res: Response) => {
 
   try {
     const userId = req.body.user.userId;
-    console.log(userId);
     const now = new Date().toISOString();
-    // const photoData = req.body.photos;
-    // const photoBuffer = Buffer.from(photoData, 'base64');
-    // const photoBase64 = photoBuffer.toString('base64'); // Convert Buffer to base64 string
     console.log('Value of tags:', tags);
     console.log(tags.connect);
     const photoEntries = photos.map((photo) => {
       return {
-        photo: photo, // Assuming 'photo' is in the format Prisma expects
-        // If additional processing is needed, do it here
+        photo: photo,
       };
     });
 
