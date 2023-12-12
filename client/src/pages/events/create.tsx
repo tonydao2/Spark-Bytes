@@ -14,6 +14,15 @@ const Create: FC = () => {
     }
 
     const createEvent = async (value: any) => {
+        if (authState && authState.decodedToken){
+            const { id, name, email, canPostEvents, isAdmin } = authState.decodedToken;
+            if (!canPostEvents){
+                return // also problem
+            }
+        }
+        else{
+            return // problem
+        }
         const serverUrl = `${API_URL}/api/events/create`;
         const { ExpirationTime, Description, Quantity, Tag } = value;
         console.log(value);
