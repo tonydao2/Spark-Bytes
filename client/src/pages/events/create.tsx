@@ -1,5 +1,5 @@
 import { useEffect, FC, useState } from "react";
-import { Typography, Button, Form, Input, DatePicker, Upload, UploadProps, message, Modal } from 'antd'
+import { Select, Typography, Button, Form, Input, DatePicker, Upload, UploadProps, message, Modal } from 'antd'
 import type { UploadFile, RcFile } from 'antd/lib/upload/interface';
 import { UploadOutline, PlusOutlined } from '@ant-design/icons';
 import { useAuth } from "@/contexts/AuthContext";
@@ -28,7 +28,63 @@ const Create: FC = () => {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
+    const [tags, setTags] = useState<Tag[]>([]);
+    const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
+    useEffect(() => {
+        const fetchTags = async () => {
+            try {
+                const response = await fetch(`${API_URL}/api/tags/type/all`, {
+                    headers: { Authorization: `Bearer ${getAuthState()?.token}` },
+                });
+                const data = await response.json();
+                if (data && Array.isArray(data)) { // Check if the response is an array
+                    setTags(data); // If the entire response is an array of tags
+                } else if (data && data.tags) {
+                    setTags(data.tags); // If the tags are in a property of the response
+                } else {
+                    setTags([]); // Set to empty array if response is not as expected
+                }
+            } catch (error) {
+                message.error('Failed to fetch tags');
+                setTags([]); // Set to empty array in case of error
+            }
+        };
+    
+        fetchTags();
+    }, []);
+
+    const handleTagChange = (tags: string[]) => {
+        setSelectedTags(tags);
+    };
+    
+    const createNewTags = async () => {
+        const newTags = selectedTags.filter(tagName => !tags.some(tag => tag.name === tagName));
+    
+        for (const tagName of newTags) {
+            console.log("Creating tag:", tagName); 
+            try {
+                const response = await fetch(`${API_URL}/api/tags/type/create`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getAuthState()?.token}`,
+                    },
+                    body: JSON.stringify({ name: tagName, color: null, type_id: null }),
+                });
+    
+                if (!response.ok) {
+                    throw new Error(`Failed to create tag: ${tagName}`);
+                }
+    
+                const newTag = await response.json();
+                setTags(currentTags => [...currentTags, newTag]);
+            } catch (error) {
+                message.error(`Failed to create new tag: ${tagName}`);
+            }
+        }
+    };
+    
     const handlePreview = async (file: UploadFile) => {
         if (!file.url && !file.preview) {
         file.preview = await getBase64(file.originFileObj as RcFile);
@@ -68,6 +124,7 @@ const Create: FC = () => {
 
 
     const createEvent = async (value: any) => {
+        await createNewTags();
         const serverUrl = `${API_URL}/api/events/create`;
         const { ExpirationTime, Description, Quantity, Tag } = value;
         const photoURLs = fileList.map(file => file.url || "");
@@ -80,7 +137,7 @@ const Create: FC = () => {
                     exp_time: ExpirationTime,
                     description: Description,
                     qty: Quantity,
-                    tags: Tag,
+                    tags: selectedTags,
                     photos: photoURLs,
                 }),
                 headers: {
@@ -159,15 +216,20 @@ const Create: FC = () => {
 
                     </Form.Item>
 
-                    <Form.Item label="Tag" name="Tag"
-                        style={{ marginBottom: "5px", color: "rgb(69, 90, 100)", }}
-                        rules={[{ required: true }]}
-                    >
-                        <Input
-                            placeholder="Tag"
-                            id="Tag"
-                            style={{ marginBottom: "20px" }}
-                        />
+                    <Form.Item label="Tag" name="Tag" rules={[{ required: true }]}>
+                        <Select
+                            mode="tags"
+                            style={{ width: '100%' }}
+                            placeholder="Select or add tags"
+                            value={selectedTags}
+                            onChange={handleTagChange}
+                        >
+                            {tags && tags.map(tag => (
+                                <Select.Option key={tag.id} value={tag.name}>
+                                    {tag.name}
+                                </Select.Option>
+                            ))}
+                        </Select>
                     </Form.Item>
 
                     <Form.Item label="Upload Image" name="Upload"
