@@ -4,9 +4,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { BoldOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import { API_URL } from "@/common/constants";
+import { ITag } from "@/common/interfaces_zod";
 
 const Create: FC = () => {
-    const router = useRouter();
+    const router = useRouter()
 
     const { getAuthState, authState } = useAuth();
     const event = () => {
@@ -30,7 +31,7 @@ const Create: FC = () => {
                     tags: Tag,
                     location: {
                         Address: Address,
-                        floor: floor,
+                        floor: parseInt(floor),
                         room: room,
                         loc_note: loc_note
 
