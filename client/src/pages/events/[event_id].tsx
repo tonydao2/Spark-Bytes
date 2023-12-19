@@ -69,15 +69,19 @@ const EventId = () => {
     return (
       <div style={{ display: 'flex', justifyContent: "center", alignItems: "center", height: "100vh", backgroundColor: 'rgb(234, 247, 240)', }}>
         <Card title={event_id} style={{ margin: "20px", textAlign: "center", maxWidth: '60%', borderRadius: "3rem" }}>
+
+
           <p style={{ textAlign: "center" }}>{event.description}</p>
           <div>
             {event.photos && event.photos.length > 0 ? renderPhotos(event.photos) : <p>No photos available</p>}
           </div>
           <div>
+
             <Descriptions style={{ display: 'flex', justifyContent: "center", alignItems: "center", textAlign: 'center' }}>
               <Descriptions.Item label="Event Created By">{event.createdBy.name}</Descriptions.Item>
+
               <Descriptions.Item label="Event Created At">{formatDate(event.createdAt)}</Descriptions.Item>
-              <Descriptions.Item label="Location">{event.location != null ? event.location : 'n/a'}</Descriptions.Item>
+              <Descriptions.Item label="Location">{event.location.Address}, Floor {event.location.floor}, Room: {event.location.room} </Descriptions.Item> 
             </Descriptions>
 
             <Descriptions>

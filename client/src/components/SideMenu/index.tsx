@@ -15,6 +15,11 @@ function SideMenu() {
   const [selectedKeys, setSelectedKeys] = useState(pathname);
 
   const { clearAuthState } = useAuth();
+  const { getAuthState } = useAuth();
+
+  const authState = getAuthState();
+  const canCreateEvents = authState.decodedToken?.canPostEvents;
+  console.log(canCreateEvents);
 
   useEffect(() => {
     setSelectedKeys(pathname);
@@ -24,6 +29,27 @@ function SideMenu() {
     clearAuthState();
     router.push("/");
   };
+
+  const menuItems = [
+    {
+      label: "Example Protected Route",
+      key: "/protected",
+      icon: <HomeOutlined />,
+    },
+    {
+      label: "Events",
+      key: "/events",
+      icon: <CalendarOutlined />,
+    },
+  ];
+
+  if (canCreateEvents) {
+    menuItems.push({
+      label: "Create Event",
+      key: "/events/create",
+      icon: <PlusOutlined />,
+    });
+  }
 
   return (
     <div className="SideMenu">
@@ -37,23 +63,7 @@ function SideMenu() {
           }
         }}
         selectedKeys={[selectedKeys]}
-        items={[
-          {
-            label: "Example Protected Route",
-            key: "/protected",
-            icon: <HomeOutlined />,
-          },
-          {
-            label: "Events",
-            key: "/events",
-            icon: <CalendarOutlined />,
-          },
-          {
-            label: "Create Event",
-            key: "/events/create",
-            icon: <PlusOutlined />,
-          },
-        ]}
+        items={menuItems}
       ></Menu>
       <Menu
         mode="vertical"
@@ -74,4 +84,5 @@ function SideMenu() {
     </div>
   );
 }
+
 export default SideMenu;

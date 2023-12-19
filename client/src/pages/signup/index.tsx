@@ -5,9 +5,7 @@ import { useRouter } from "next/router";
 import { API_URL } from "@/common/constants";
 
 export default function Signup() {
-
   const router = useRouter();
-
   // Directs to home page
   const home = () => {
     router.push("/");
@@ -40,8 +38,6 @@ export default function Signup() {
         },
       });
 
-
-
       if (response.ok) {
         // Request was successful
         const data = await response.json(); // If the server returns a response
@@ -49,7 +45,6 @@ export default function Signup() {
       }
 
       else {
-        console.log(response)
         if (response.status === 409) {
           alert("CONFLICT: USER ALREADY EXIST")
         }
@@ -67,7 +62,6 @@ export default function Signup() {
   // send info to signup backend route 
 
   const validatePassword = async (rule: any, value: any) => {
-
     if (value.length < 8) {
       throw new Error("Password has to be at least 8 characters long")
     }
@@ -98,15 +92,11 @@ export default function Signup() {
           <div style={{ display: "flex", flexDirection: 'column' }}>
 
             <Form.Item label="Name" name="name"
-              rules={[{ required: true }]}
-            >
+              rules={[{ required: true }]}>
               <Input placeholder="Name" id="Name" />
             </Form.Item>
 
-            <Form.Item
-              label="Email Address"
-              name="email"
-
+            <Form.Item label="Email Address" name="email"
               rules={[{
                 type: 'email',
                 message: 'The input is not valid E-mail!',
@@ -114,9 +104,7 @@ export default function Signup() {
               {
                 required: true,
                 message: 'Please input your E-mail!',
-              },
-
-
+                },
               ]}
             >
               <Input placeholder="Email" />
@@ -170,8 +158,6 @@ export default function Signup() {
         </div>
 
       </div >
-
-
 
     </div >
 

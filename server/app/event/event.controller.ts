@@ -1,9 +1,31 @@
 import { Request, Response } from 'express';
 import prisma from '../prisma_client.ts';
+import { env } from '../common/setupEnv.ts';
+import jwt from 'jsonwebtoken';
+
+const JWT_SECRET = env.JWT_TOKEN_SECRET;
+
 
 export const get_events_for_user = async (req: Request, res: Response) => {
   const userId = req.body.user.id;
   try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      return res.status(401).json({ error: 'No token provided' });
+    }
+
+    const token = authHeader.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ error: 'No token provided' });
+    }
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const perms = (decoded as any).canPostEvents; //
+    if (!perms){
+      return res.status(403).json({error: "dont have perms to be here"})
+    }
+
+
+
     const events = await prisma.event.findMany({
       where: {
         OR: [
@@ -98,7 +120,7 @@ export const get_event_by_id = async (req: Request, res: Response) => {
 };
 
 export const create_event = async (req: Request, res: Response) => {
-  const { exp_time, description, qty, tags, photos } = req.body;
+  const { exp_time, description, qty, tags, photos, location } = req.body;
 
   try {
     const userId = req.body.user.userId;
@@ -121,7 +143,7 @@ export const create_event = async (req: Request, res: Response) => {
         exp_time,
         description,
         qty,
-        done: false,
+        done: true,
 
         tags: tagsData,
         createdBy: {
@@ -129,17 +151,22 @@ export const create_event = async (req: Request, res: Response) => {
         },
         createdAt: now,
         updatedAt: now,
-        // location: {
-        //   create: {
-        //     Address: location.Address,
-        //     floor: location.floor,
-        //     room: location.room,
-        //     loc_note: location.loc_note,
-        //   },
-        // },
         photos: {
           create: photoEntries,
         },
+        location: {
+          create: {
+            Address: location.Address,
+            floor: location.floor,
+            room: location.room,
+            loc_note: location.loc_note,
+          },
+        },
+        // photos: {
+        //   create: {
+        //     photo: photoBase64,
+        //   },
+        // },
       },
     });
 
