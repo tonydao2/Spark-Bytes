@@ -9,6 +9,7 @@ import {
   Select,
   Button,
   Tag,
+  Image,
 } from "antd";
 import { API_URL } from "../../common/constants";
 import { IAuthTokenDecoded, IEvent, ITag } from "../../common/interfaces";
@@ -52,6 +53,7 @@ const Events: FC = () => {
         }
 
         const responseJSON = await eventsResponse.json();
+        console.log(responseJSON);
         const eventsData = responseJSON.events;
         setEvents(eventsData);
         setIsLoading(false);
@@ -247,6 +249,24 @@ const Events: FC = () => {
                   ? `${event.location.Address}, Floor ${event.location.floor}, Room ${event.location.room}`
                   : "Not specified"}
               </Paragraph>
+
+              <Image.PreviewGroup>
+                {event.photos &&
+                  event.photos.map((photo, index) => (
+                    <Image
+                      key={index}
+                      src={photo.photo}
+                      alt={`Photo ${index}`}
+                      style={{
+                        width: "100%",
+                        objectFit: "cover",
+                        height: "200px",
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  ))}
+              </Image.PreviewGroup>
+
             </Card>
           </List.Item>
         )}

@@ -49,6 +49,7 @@ export const get_active_events = async (_: Request, res: Response) => {
       include: {
         tags: true,
         location: true,
+        photos: true,
         createdBy: {
           select: {
             name: true,
