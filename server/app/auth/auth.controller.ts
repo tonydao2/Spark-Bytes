@@ -150,6 +150,9 @@ export const login = async (req: Request, res: Response) => {
       {
         userId: user.id,
         userEmail: user.email,
+        userName: user.name,
+        canPostEvents: user.canPostEvents,
+        isAdmin: user.isAdmin,
       },
       JWT_SECRET,
       { expiresIn: '1h' }

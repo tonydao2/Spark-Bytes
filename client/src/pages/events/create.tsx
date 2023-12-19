@@ -9,20 +9,21 @@ import { ITag } from "@/common/interfaces_zod";
 const Create: FC = () => {
     const router = useRouter()
 
-    const { getAuthState, authState } = useAuth();
+    const { getAuthState} = useAuth();
     const event = () => {
         router.push("/events");
     }
 
     const createEvent = async (value: any) => {
-        if (authState && authState.decodedToken){
-            const { id, name, email, canPostEvents, isAdmin } = authState.decodedToken;
+        const authState = getAuthState();
+        if (authState.decodedToken != null){
+            const {id, name, email, isAdmin, canPostEvents, iat, exp } = authState.decodedToken;
+            console.log(id, name, email, isAdmin, canPostEvents, iat, exp);
+
             if (!canPostEvents){
-                return // also problem
-            }
-        }
-        else{
-            return // problem
+                alert("You do not have permission to post events");
+                router.push("/events");
+            } 
         }
       
         const serverUrl = `${API_URL}/api/events/create`;
@@ -60,6 +61,9 @@ const Create: FC = () => {
                 alert("Event Created"); //uncomment later
                 event();
             }
+            if (response.status == 500) {
+                alert("Event Creation Failed");
+            }
         } catch (error) {
             console.log(error);
         }
@@ -69,8 +73,6 @@ const Create: FC = () => {
         if (!value || value.trim() == '') {
             throw new Error('Location must be non empty')
         }
-
-
     }
 
     return (
