@@ -15,6 +15,13 @@ const getBase64 = (file: RcFile): Promise<string> =>
     reader.onerror = (error) => reject(error);
 });
 
+interface Tag {
+    tag_id: number;
+    name: string;
+    color: string;
+    type_id: number;
+}
+
 const Create: FC = () => {
     const router = useRouter();
 
@@ -34,55 +41,30 @@ const Create: FC = () => {
     useEffect(() => {
         const fetchTags = async () => {
             try {
-                const response = await fetch(`${API_URL}/api/tags/type/all`, {
+                const response = await fetch(`${API_URL}/api/tags/`, {
                     headers: { Authorization: `Bearer ${getAuthState()?.token}` },
                 });
                 const data = await response.json();
-                if (data && Array.isArray(data)) { // Check if the response is an array
-                    setTags(data); // If the entire response is an array of tags
+                console.log(data);
+                if (data && Array.isArray(data)) {
+                    setTags(data); 
                 } else if (data && data.tags) {
-                    setTags(data.tags); // If the tags are in a property of the response
+                    setTags(data.tags);
                 } else {
-                    setTags([]); // Set to empty array if response is not as expected
+                    setTags([]);
                 }
             } catch (error) {
                 message.error('Failed to fetch tags');
-                setTags([]); // Set to empty array in case of error
+                setTags([]);
             }
         };
     
         fetchTags();
     }, []);
 
-    const handleTagChange = (tags: string[]) => {
+    const handleTagChange = (tags: any) => {
+        console.log(tags);
         setSelectedTags(tags);
-    };
-    
-    const createNewTags = async () => {
-        const newTags = selectedTags.filter(tagName => !tags.some(tag => tag.name === tagName));
-    
-        for (const tagName of newTags) {
-            console.log("Creating tag:", tagName); 
-            try {
-                const response = await fetch(`${API_URL}/api/tags/type/create`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${getAuthState()?.token}`,
-                    },
-                    body: JSON.stringify({ name: tagName, color: null, type_id: null }),
-                });
-    
-                if (!response.ok) {
-                    throw new Error(`Failed to create tag: ${tagName}`);
-                }
-    
-                const newTag = await response.json();
-                setTags(currentTags => [...currentTags, newTag]);
-            } catch (error) {
-                message.error(`Failed to create new tag: ${tagName}`);
-            }
-        }
     };
     
     const handlePreview = async (file: UploadFile) => {
@@ -124,13 +106,11 @@ const Create: FC = () => {
 
 
     const createEvent = async (value: any) => {
-        await createNewTags();
         const serverUrl = `${API_URL}/api/events/create`;
         const { ExpirationTime, Description, Quantity, Tag } = value;
         const photoURLs = fileList.map(file => file.url || "");
 
         try {
-            console.log({ ExpirationTime, Description, Quantity, Tag, photoURLs })
             const response = await fetch(serverUrl, {
                 method: "POST",
                 body: JSON.stringify({
@@ -225,7 +205,7 @@ const Create: FC = () => {
                             onChange={handleTagChange}
                         >
                             {tags && tags.map(tag => (
-                                <Select.Option key={tag.id} value={tag.name}>
+                                <Select.Option key={tag.tag_id} value={tag.tag_id}>
                                     {tag.name}
                                 </Select.Option>
                             ))}
@@ -234,7 +214,7 @@ const Create: FC = () => {
 
                     <Form.Item label="Upload Image" name="Upload"
                         style={{ marginBottom: "5px", color: "rgb(69, 90, 100)", }}
-                        rules={[{ required: true }]}
+                        rules={[{ required: false }]}
                     >
                         <Upload
                             listType="picture-card"
