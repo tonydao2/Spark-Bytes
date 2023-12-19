@@ -104,12 +104,16 @@ export const create_event = async (req: Request, res: Response) => {
     const userId = req.body.user.userId;
     const now = new Date().toISOString();
     console.log('Value of tags:', tags);
-    console.log(tags.connect);
+    console.log(tags);
     const photoEntries = photos.map((photo) => {
       return {
         photo: photo,
       };
     });
+    let tagsData = {};
+    if (tags && tags.length > 0) {
+      tagsData = { connect: tags.map((tagId => ({ tag_id: tagId }))) };
+    }
 
     const newEvent = await prisma.event.create({
       data: {
@@ -119,9 +123,7 @@ export const create_event = async (req: Request, res: Response) => {
         qty,
         done: false,
 
-        tags: {
-          connect: tags.connect, // Use the 'connect' property directly
-        },
+        tags: tagsData,
         createdBy: {
           connect: { id: userId },
         },
@@ -142,6 +144,7 @@ export const create_event = async (req: Request, res: Response) => {
     });
 
     res.status(201).json(newEvent);
+    
   } catch (error) {
     console.error('Error creating event:', error);
     res.status(500).json({ error: 'Server error' });
