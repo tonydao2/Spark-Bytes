@@ -76,9 +76,6 @@ async function hasher(pw: string): Promise<string> {
 }
 
 export const signup = async (req: Request, res: Response) => {
-  // console.log(jwt, env, create) // i hate typescript
-  console.log('Hit');
-  console.log(req.body);
   const { name, email, password } = req.body; // destructure into consts
   if (!name || !email || !password) {
     return res

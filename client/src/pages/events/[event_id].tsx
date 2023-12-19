@@ -2,7 +2,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { API_URL } from "@/common/constants";
-import { Card, Descriptions, Image } from 'antd';
+import { Card, Descriptions, Image, Row, Col } from 'antd';
 import { useAuth } from "@/contexts/AuthContext";
 
 // Define the EventId component
@@ -25,6 +25,7 @@ const EventId = () => {
 
         if (response.ok) {
           const data = await response.json();
+          console.log(data);
           setEvent(data);
         } else {
           console.log('error');
@@ -43,6 +44,22 @@ const EventId = () => {
     return resDate;
   };
 
+  const renderPhotos = (photos: any) => {
+    return (
+      <Row gutter={[16, 16]} style={{ marginTop: '16px' }}>
+        {photos.map((photo: any, index: any) => (
+          <Col key={index} xs={24} sm={12} md={8} lg={6}>
+            <Image
+              src={photo.photo}
+              alt={`Photo ${index}`}
+              style={{ width: '100%', objectFit: 'cover', height: '200px' }} // Set a fixed height for all images
+            />
+          </Col>
+        ))}
+      </Row>
+    );
+  };
+
   if (!event) {
     return <div>Loading...</div>;
   }
@@ -55,7 +72,9 @@ const EventId = () => {
 
 
           <p style={{ textAlign: "center" }}>{event.description}</p>
-          {event.photos.length > 0 && <Image width={200} src={event.photos[0]} />}
+          <div>
+            {event.photos && event.photos.length > 0 ? renderPhotos(event.photos) : <p>No photos available</p>}
+          </div>
           <div>
 
             <Descriptions style={{ display: 'flex', justifyContent: "center", alignItems: "center", textAlign: 'center' }}>

@@ -9,6 +9,7 @@ import {
   Select,
   Button,
   Tag,
+  Image,
 } from "antd";
 import { API_URL } from "../../common/constants";
 import { IAuthTokenDecoded, IEvent, ITag } from "../../common/interfaces";
@@ -74,7 +75,7 @@ const Events: FC = () => {
     const startIndex = (currentPage - 1) * pageSize;
     const endIndex = startIndex + pageSize;
 
-    let filteredEvents = events;
+    let filteredEvents = [...events];
 
     // Filter tags
     if (filteredTag !== null) {
@@ -247,6 +248,41 @@ const Events: FC = () => {
                   ? `${event.location.Address}, Floor ${event.location.floor}, Room ${event.location.room}`
                   : "Not specified"}
               </Paragraph>
+
+              <Image.PreviewGroup>
+                {event.photos && event.photos.length > 0 && (
+                  <Image
+                    key={0}
+                    src={event.photos[0].photo}
+                    alt={`Photo 0`}
+                    style={{
+                      width: "100%",
+                      objectFit: "cover",
+                      height: "200px",
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                )}
+
+                {event.photos && event.photos.length > 1 && (
+                  <div style={{ display: "none" }}>
+                    {event.photos.slice(1).map((photo, index) => (
+                      <Image
+                        key={index + 1} // Adjust the key to start from 1 since we are slicing the array
+                        src={photo.photo}
+                        alt={`Photo ${index + 1}`} // Adjust the alt text accordingly
+                        style={{
+                          width: "100%",
+                          objectFit: "cover",
+                          height: "200px",
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                    ))}
+                  </div>
+                )}
+              </Image.PreviewGroup>
+
             </Card>
           </List.Item>
         )}
