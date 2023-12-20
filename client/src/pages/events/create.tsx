@@ -42,7 +42,7 @@ const Create: FC = () => {
     useEffect(() => {
         const fetchTags = async () => {
             try {
-                console.log("fetching tags");
+                console.log("test")
                 const response = await fetch(`${API_URL}/api/tags/`, {
                     headers: { Authorization: `Bearer ${getAuthState()?.token}` },
                 });
@@ -129,8 +129,7 @@ const Create: FC = () => {
                 body: JSON.stringify({
                     exp_time: ExpirationTime,
                     description: Description,
-                    qty: Quantity,
-
+                    qty: String(Quantity),
                     tags: selectedTags,
                     photos: photoURLs,
                     location: {
@@ -273,27 +272,25 @@ const Create: FC = () => {
 
                     <div style={{ display: 'flex' }}>
 
-                    <Form.Item label="Floor #" name="floor"
-                        style={{ marginRight: '5px', marginBottom: "5px", color: "rgb(69, 90, 100)", width: '50%' }}
-                        rules={[{ required: true, type: 'number', message: 'Please input a number for floor!' }]}
-                    >
-                        <InputNumber
-                            placeholder="Floor"
-                            id="floor"
-                            style={{ width: '100%', marginBottom: "20px" }}
-                            min={1} // You can specify a minimum value if necessary
-                        />
-                    </Form.Item>
+                        <Form.Item label="Floor #" name="floor"
+                            style={{ marginRight: '5px', marginBottom: "5px", color: "rgb(69, 90, 100)", width: '50%' }}
+                            rules={[{ required: true }, { validator: validateLocation }]} // fix validator for int
+                        >
+                            <Input
+                                placeholder="Floor"
+                                id="floor"
+                                style={{ marginBottom: "20px" }}
+                            />
+                        </Form.Item>
 
                         <Form.Item label="Room #" name="room"
                             style={{ marginBottom: "5px", color: "rgb(69, 90, 100)", width: '50%' }}
-                            rules={[{ required: true, type: 'number', message: 'Please input a number for room!' }]}
+                            rules={[{ required: true }, { validator: validateLocation }]}
                         >
-                            <InputNumber
+                            <Input
                                 placeholder="Room"
                                 id="room"
-                                style={{ width: '100%', marginBottom: "20px" }}
-                                min={1} // You can specify a minimum value if necessary
+                                style={{ marginBottom: "20px" }}
                             />
                         </Form.Item>
                     </div>

@@ -55,8 +55,6 @@ export const get_events_for_user = async (req: Request, res: Response) => {
 export const get_active_events = async (_: Request, res: Response) => {
   try {
     const now = new Date();
-    console.log('Current time (now):', now.toISOString()); // Log the current time
-
     const activeEvents = await prisma.event.findMany({
       where: {
         AND: [
