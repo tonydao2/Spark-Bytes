@@ -1,7 +1,7 @@
 import { useEffect, FC, useState } from "react";
 import { Select, Typography, Button, Form, Input, DatePicker, Upload, UploadProps, message, Modal, InputNumber } from 'antd'
 import type { UploadFile, RcFile } from 'antd/lib/upload/interface';
-import { UploadOutline, PlusOutlined } from '@ant-design/icons';
+import { UploadOutlined, PlusOutlined } from '@ant-design/icons';
 import { useAuth } from "@/contexts/AuthContext";
 import { BoldOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
