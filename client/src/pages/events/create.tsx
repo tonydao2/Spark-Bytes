@@ -42,6 +42,7 @@ const Create: FC = () => {
     useEffect(() => {
         const fetchTags = async () => {
             try {
+                console.log("fetching tags");
                 const response = await fetch(`${API_URL}/api/tags/`, {
                     headers: { Authorization: `Bearer ${getAuthState()?.token}` },
                 });

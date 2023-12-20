@@ -75,7 +75,7 @@ const Events: FC = () => {
     const startIndex = (currentPage - 1) * pageSize;
     const endIndex = startIndex + pageSize;
 
-    let filteredEvents = [...events];
+    let filteredEvents = events;
 
     // Filter tags
     if (filteredTag !== null) {
@@ -251,6 +251,7 @@ const Events: FC = () => {
 
               <Image.PreviewGroup>
                 {event.photos && event.photos.length > 0 && (
+                  // Only show the first photo in the list if there is one
                   <Image
                     key={0}
                     src={event.photos[0].photo}
@@ -264,23 +265,25 @@ const Events: FC = () => {
                   />
                 )}
 
-                {event.photos && event.photos.length > 1 && (
-                  <div style={{ display: "none" }}>
-                    {event.photos.slice(1).map((photo, index) => (
-                      <Image
-                        key={index + 1} // Adjust the key to start from 1 since we are slicing the array
-                        src={photo.photo}
-                        alt={`Photo ${index + 1}`} // Adjust the alt text accordingly
-                        style={{
-                          width: "100%",
-                          objectFit: "cover",
-                          height: "200px",
-                        }}
-                        onClick={(e) => e.stopPropagation()}
-                      />
-                    ))}
-                  </div>
-                )}
+                <div style={{ display: "none" }}>
+                  {event.photos &&
+                    event.photos.map((photo, index) => {
+                      // Maps the rest of the photos in the list to be displayed when clicked
+                      return (
+                        <Image
+                          key={index}
+                          src={photo.photo}
+                          alt={`Photo ${index}`}
+                          style={{
+                            width: "100%",
+                            objectFit: "cover",
+                            height: "200px",
+                          }}
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      );
+                    })}
+                </div>
               </Image.PreviewGroup>
 
             </Card>
