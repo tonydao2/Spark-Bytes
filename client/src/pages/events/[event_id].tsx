@@ -5,6 +5,13 @@ import { API_URL } from "@/common/constants";
 import { Card, Descriptions, Image, Row, Col } from 'antd';
 import { useAuth } from "@/contexts/AuthContext";
 
+interface Tag {
+  tag_id: number;
+  name: string;
+  color: string;
+  type_id: number;
+}
+
 // Define the EventId component
 const EventId = () => {
   const router = useRouter();
@@ -88,7 +95,7 @@ const EventId = () => {
               <Descriptions.Item label="Quantity">{event.qty}</Descriptions.Item>
               <Descriptions.Item label="Expiration Time">{formatDate(event.exp_time)}</Descriptions.Item>
               <Descriptions.Item label="Tags">
-                {event.tags.length > 0 ? event.tags.map(tag => tag.name).join(", ") : 'n/a'}
+                {event.tags.length > 0 ? event.tags.map((tag: Tag) => tag.name).join(", ") : 'n/a'}
               </Descriptions.Item>
             </Descriptions>
           </div>
