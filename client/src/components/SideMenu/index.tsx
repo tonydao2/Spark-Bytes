@@ -13,17 +13,20 @@ function SideMenu() {
   const router = useRouter();
   const pathname = router.pathname;
   const [selectedKeys, setSelectedKeys] = useState(pathname);
+  const [canCreateEvents, setCanCreateEvents] = useState<boolean | undefined>(undefined);
+
 
   const { clearAuthState } = useAuth();
   const { getAuthState } = useAuth();
 
-  const authState = getAuthState();
-  const canCreateEvents = authState.decodedToken?.canPostEvents;
-  console.log(canCreateEvents);
-
   useEffect(() => {
     setSelectedKeys(pathname);
-  }, [pathname]);
+
+    const authState = getAuthState();
+    if (authState && authState.decodedToken) {
+      setCanCreateEvents(authState.decodedToken.canPostEvents);
+    }
+  }, [pathname, getAuthState]);
 
   const signOut = () => {
     clearAuthState();
