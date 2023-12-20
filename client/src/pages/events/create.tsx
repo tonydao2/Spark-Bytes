@@ -1,5 +1,5 @@
 import { useEffect, FC, useState } from "react";
-import { Select, Typography, Button, Form, Input, DatePicker, Upload, UploadProps, message, Modal } from 'antd'
+import { Select, Typography, Button, Form, Input, DatePicker, Upload, UploadProps, message, Modal, InputNumber } from 'antd'
 import type { UploadFile, RcFile } from 'antd/lib/upload/interface';
 import { UploadOutline, PlusOutlined } from '@ant-design/icons';
 import { useAuth } from "@/contexts/AuthContext";
@@ -210,13 +210,14 @@ const Create: FC = () => {
                     </Form.Item>
 
                     <Form.Item label="Quantity" name="Quantity"
-                        style={{ marginBottom: "5px", color: "rgb(69, 90, 100)", }}
-                        rules={[{ required: true }]}
+                        style={{ marginBottom: "5px", color: "rgb(69, 90, 100)" }}
+                        rules={[{ required: true, type: 'number', message: 'Please input a number for quantity!' }]}
                     >
-                        <Input
+                        <InputNumber
                             placeholder="Quantity"
                             id="Quantity"
-                            style={{ marginBottom: "20px" }}
+                            style={{ width: '100%', marginBottom: "20px" }}
+                            min={1} // You can specify a minimum value if necessary
                         />
                     </Form.Item>
 
@@ -272,25 +273,27 @@ const Create: FC = () => {
 
                     <div style={{ display: 'flex' }}>
 
-                        <Form.Item label="Floor #" name="floor"
-                            style={{ marginRight: '5px', marginBottom: "5px", color: "rgb(69, 90, 100)", width: '50%' }}
-                            rules={[{ required: true }, { validator: validateLocation }]} // fix validator for int
-                        >
-                            <Input
-                                placeholder="Floor"
-                                id="floor"
-                                style={{ marginBottom: "20px" }}
-                            />
-                        </Form.Item>
+                    <Form.Item label="Floor #" name="floor"
+                        style={{ marginRight: '5px', marginBottom: "5px", color: "rgb(69, 90, 100)", width: '50%' }}
+                        rules={[{ required: true, type: 'number', message: 'Please input a number for floor!' }]}
+                    >
+                        <InputNumber
+                            placeholder="Floor"
+                            id="floor"
+                            style={{ width: '100%', marginBottom: "20px" }}
+                            min={1} // You can specify a minimum value if necessary
+                        />
+                    </Form.Item>
 
                         <Form.Item label="Room #" name="room"
                             style={{ marginBottom: "5px", color: "rgb(69, 90, 100)", width: '50%' }}
-                            rules={[{ required: true }, { validator: validateLocation }]}
+                            rules={[{ required: true, type: 'number', message: 'Please input a number for room!' }]}
                         >
-                            <Input
+                            <InputNumber
                                 placeholder="Room"
                                 id="room"
-                                style={{ marginBottom: "20px" }}
+                                style={{ width: '100%', marginBottom: "20px" }}
+                                min={1} // You can specify a minimum value if necessary
                             />
                         </Form.Item>
                     </div>
