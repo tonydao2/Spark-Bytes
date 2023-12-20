@@ -20,6 +20,7 @@ export default function Signup() {
 
 
   const handleFormSubmit = async (value: any) => {
+    console.log(API_URL);
     const serverUrl = `${API_URL}/api/auth/signup`;
     const { name, email, password } = value;
 
