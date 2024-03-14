@@ -4,8 +4,18 @@ Spark Bites is a platform for Boston University students and faculty members to 
 
 Deployed here: https://spark-bytes-project-team-4.vercel.app/
 
+### Snapshots
+---
+
 <img width="365" alt="Screenshot 2024-01-19 at 2 03 45 PM" src="https://github.com/tonydao2/Spark-Bytes/assets/123415277/ea4c848f-ec12-4a26-b866-9538626efaff">
 
+<img width="419" alt="Screenshot 2024-03-14 at 1 55 47 AM" src="https://github.com/tonydao2/Spark-Bytes/assets/123415277/aec8606a-9093-4a07-8741-e43d129d8b0b">
+
+<img width="495" alt="Screenshot 2024-03-14 at 1 56 00 AM" src="https://github.com/tonydao2/Spark-Bytes/assets/123415277/479fee2f-287c-4680-b5b1-ef4569ea2c83">
+
+<img width="954" alt="Screenshot 2024-03-14 at 1 52 28 AM" src="https://github.com/tonydao2/Spark-Bytes/assets/123415277/6e59306a-04a2-44fd-86c0-9cebe11e41b1">
+
+<img width="1416" alt="Screenshot 2024-03-14 at 1 55 19 AM" src="https://github.com/tonydao2/Spark-Bytes/assets/123415277/901a2694-c4a2-47d4-a332-9d792404f3f0">
 
 ## Installation Guide
 
@@ -13,6 +23,7 @@ Deployed here: https://spark-bytes-project-team-4.vercel.app/
 Navigate to client folder, and run `npm install` to install all dependencies. Then, run `npm run dev` to start the development server.
 
 ### Server
+
 Navigate to server folder, and run `npm install` to install all dependencies. Then, run `npm run dev` to start the development server.
 
 You need to create a `.env` file before you start the API or the database. Create a file called `.env` in the server folder, and add the following lines:
